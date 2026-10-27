@@ -1,0 +1,25 @@
+@import 'tailwindcss';
+
+@layer base {
+  html {
+    color-scheme: dark;
+  }
+
+  body {
+    @apply antialiased;
+
+    font-synthesis: none;
+    min-height: 100dvh;
+    text-rendering: optimizeLegibility;
+  }
+
+  button:not(:disabled):not([aria-disabled='true']),
+  [role='button']:not(:disabled):not([aria-disabled='true']) {
+    cursor: pointer;
+  }
+
+  button:disabled,
+  [aria-disabled='true'] {
+    cursor: not-allowed;
+  }
+}

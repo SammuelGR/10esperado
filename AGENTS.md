@@ -9,7 +9,7 @@
 ## Documentation Map
 
 - [Architecture](docs/architecture.md): accepted technical decisions.
-- [Requirements sources](docs/requirements.md): specifications and release scope in Jira and Confluence.
+- [Requirements sources](docs/requirements.md): specifications, visual references, and release scope in Jira and Confluence.
 
 ## Language
 
@@ -18,37 +18,73 @@
 
 ## Build and Validation Gates
 
-Application tooling is not configured yet. Once it exists, read `package.json` for available scripts and dependency versions; record the validation commands in this section.
+Read `package.json` for available scripts and dependency versions.
 
-During development, run focused tests and checks for the affected code. Run the complete gates below before handing off the final change.
+| Command            | Purpose                                             |
+| ------------------ | --------------------------------------------------- |
+| `npm run dev`      | Start the development server.                       |
+| `npm run dev:host` | Expose the development server on the local network. |
+| `npm run build`    | Check TypeScript and produce the production build.  |
+| `npm run preview`  | Serve the production build locally.                 |
+| `npm run lint`     | Check code with oxlint.                             |
+| `npm run format`   | Format files with Prettier.                         |
+| `npm run test`     | Run the automated test suite with Vitest.           |
+| `npm run check`    | Run the complete validation gate.                   |
 
-Before reporting a code change as ready:
+During development, run focused tests and checks for the affected code. Run the validation gate below before handing off the final change.
 
-1. Run the configured TypeScript validation.
-2. Run the configured automated test suite.
-3. Run the production build.
-4. Run the configured lint and formatting checks.
+Before reporting a code change as ready, run:
 
-Use an aggregate validation script when it covers these gates. Do not rerun a gate separately if the aggregate already runs it.
+```bash
+npm run check
+```
+
+Do not rerun individual checks already covered by this gate.
 
 If configuration, dependencies, or implementation prevent a required check, report the exact blocker. Do not disable checks, skip failing tests, or loosen configuration to make a change pass. Distinguish failures introduced by the change from pre-existing failures.
 
 ## Testing Rules
 
-- Cover business rules in service tests and user interactions in interface tests. Base coverage on the task's acceptance criteria.
-- Include rejected operations and verify that they preserve existing data when required by the specification.
-- Isolate persisted data between tests so results do not depend on execution order.
-- Test observable behavior rather than component internals, decorative styling, or arbitrary coverage targets.
-- Mock at the boundary relevant to the test. Do not mock away the business rule or persistence behavior that the test is intended to validate.
-- Keep component assertions scoped to behavior owned by that component. Use integration tests when the contract spans several components or services.
-- Use explicit test fixtures. Extract assertion helpers only when they remove meaningful duplication without hiding the behavior under test.
+- Write tests only when they protect meaningful behavior, published content, links, or project-specific business rules.
+- Do not add tests only to increase coverage numbers or assert implementation details.
+- Keep tests scoped to the component responsibility:
+  - Orchestrator components may mock child components and assert composition decisions.
+  - Component tests should assert only the content and behavior owned by that component.
+  - Content regression tests may render real component trees and use real data when the goal is to protect published content.
+- Translation text assertions should usually target the i18n key rendered by the test mock, not the final translated copy. The goal is to verify that the correct translation key is wired into the UI.
+- Use explicit fixtures for fake data. Do not mix real production content into fake fixtures unless the test is intentionally validating real content.
+- Prefer clear inline assertions. Create local helpers only when they remove meaningful duplication and make the test easier to read.
+- Helper names must describe exactly what is being asserted. Avoid vague names such as `expectContent` or helpers that hide the main behavior under test.
+- Do not turn secondary implementation details, decorative styling, aria labels, or non-essential copy into unnecessary test contracts.
 
 ## TypeScript and React Rules
 
 - Preserve the strictness of the active TypeScript configuration. Do not introduce `any` without a concrete untyped boundary and a locally documented reason.
 - Keep runtime imports and type-only imports distinct.
-- Define component props explicitly. Extract child components or helpers when branching obscures the JSX structure.
+- Declare default-exported React components with `export default function ComponentName()` instead of a separate trailing export.
+- Prefer small React components with explicit props types.
+- Extract child components or helpers when branching obscures the JSX structure.
 - Do not leave unused code, dead exports, or commented-out implementations.
+
+## Linting and Formatting Rules
+
+- Follow `.oxlintrc.json` for lint rules and `.prettierrc` for formatting.
+- Keep code-quality rules in oxlint and formatting concerns in Prettier.
+- Use `npm run lint -- --fix` for lint fixes and `npx prettier --check .` for read-only formatting validation; no separate scripts are needed.
+
+## Styling Rules
+
+- Use Tailwind CSS v4 for styling.
+- Global CSS lives in `src/styles/globals.css`.
+- Use `src/utils/cn.ts` to compose conditional Tailwind classes and resolve conflicting utilities.
+- Keep global CSS limited to Tailwind imports, base element defaults, and truly global browser normalization. Do not duplicate resets already provided by Tailwind's Preflight.
+- Place global element styles in `@layer base` and custom design tokens in `@theme`.
+- Keep CSS declarations alphabetized inside each rule unless cascade, browser compatibility, or readability requires a different order.
+- Keep Tailwind utility classes roughly alphabetized when practical, without sacrificing responsive/state grouping or readability.
+- Break long `className` values across lines when they exceed the configured Prettier print width.
+- Use Tailwind's `motion-safe:` variant for non-essential CSS movement such as transforms and animations; keep non-motion transitions, such as color changes, outside it.
+- Do not add theme tokens, fonts, color palettes, or design-specific values until those decisions are explicitly accepted.
+- Do not create component CSS files unless Tailwind utilities are insufficient for a concrete implementation.
 
 ## Workflow Rules
 
