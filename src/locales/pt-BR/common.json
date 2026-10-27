@@ -1,0 +1,10 @@
+{
+  "form": {
+    "password": {
+      "visibility": {
+        "show": "Mostrar senha",
+        "hide": "Ocultar senha"
+      }
+    }
+  }
+}

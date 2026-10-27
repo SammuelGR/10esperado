@@ -1,0 +1,28 @@
+{
+  "content": {
+    "header": {
+      "title": "Criar conta",
+      "description": "Crie sua conta para acessar e gerenciar seus quizzes."
+    }
+  },
+  "form": {
+    "username": {
+      "label": "Username",
+      "placeholder": "Escolha um username",
+      "helper": "3 a 24 caracteres. Letras, números e _."
+    },
+    "password": {
+      "label": "Senha",
+      "placeholder": "Crie uma senha",
+      "helper": "6 a 64 caracteres."
+    },
+    "confirmPassword": {
+      "label": "Confirmar senha",
+      "placeholder": "Confirme sua senha"
+    },
+    "submit": {
+      "label": "Criar conta",
+      "loading": "Criando conta..."
+    }
+  }
+}
