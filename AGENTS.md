@@ -57,6 +57,12 @@ If configuration, dependencies, or implementation prevent a required check, repo
 - Helper names must describe exactly what is being asserted. Avoid vague names such as `expectContent` or helpers that hide the main behavior under test.
 - Do not turn secondary implementation details, decorative styling, aria labels, or non-essential copy into unnecessary test contracts.
 
+## Repository Organization
+
+- Page content entry points belong in `src/pages/`.
+- Reserve `src/components/` for reusable components shared across the application.
+- Keep page-specific components close to their owning page or component, including nested subdirectories when appropriate. Do not place local components in `src/components/`.
+
 ## TypeScript and React Rules
 
 - Preserve the strictness of the active TypeScript configuration. Do not introduce `any` without a concrete untyped boundary and a locally documented reason.
@@ -66,15 +72,25 @@ If configuration, dependencies, or implementation prevent a required check, repo
 - Extract child components or helpers when branching obscures the JSX structure.
 - Do not leave unused code, dead exports, or commented-out implementations.
 
+## Import Rules
+
+- The `@/*` alias maps to `src/*`.
+- Use local relative imports for files in the same directory or tightly coupled nearby files.
+- Use the `@/` alias when it makes cross-directory imports clearer.
+- Do not rewrite imports solely for style churn.
+
 ## Linting and Formatting Rules
 
 - Follow `.oxlintrc.json` for lint rules and `.prettierrc` for formatting.
 - Keep code-quality rules in oxlint and formatting concerns in Prettier.
+- In multiline JSX, separate adjacent sibling elements and expression blocks at the same indentation level with a blank line.
 - Use `npm run lint -- --fix` for lint fixes and `npx prettier --check .` for read-only formatting validation; no separate scripts are needed.
 
 ## Styling Rules
 
 - Use Tailwind CSS v4 for styling.
+- Import every Lucide icon with an `Icon` suffix alias, for example `import { Menu as MenuIcon } from 'lucide-react'`.
+- Import every React Simple Icons brand icon with an `Icon` suffix alias, for example `import { SiGithub as GitHubIcon } from '@icons-pack/react-simple-icons'`.
 - Global CSS lives in `src/styles/globals.css`.
 - Use `src/utils/cn.ts` to compose conditional Tailwind classes and resolve conflicting utilities.
 - Keep global CSS limited to Tailwind imports, base element defaults, and truly global browser normalization. Do not duplicate resets already provided by Tailwind's Preflight.

@@ -1,2 +1,3 @@
 coverage
 dist
+src/routes/-routeTree.gen.ts

@@ -1,5 +1,6 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "ignorePatterns": ["src/routes/-routeTree.gen.ts"],
   "categories": {
     "correctness": "error",
     "suspicious": "warn"
