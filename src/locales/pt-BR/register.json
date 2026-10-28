@@ -9,20 +9,38 @@
     "username": {
       "label": "Username",
       "placeholder": "Escolha um username",
-      "helper": "3 a 24 caracteres. Letras, números e _."
+      "helper": "3 a 24 caracteres. Letras, números e _.",
+      "errors": {
+        "required": "Informe um username.",
+        "length": "O username deve ter de 3 a 24 caracteres.",
+        "invalidCharacters": "Use apenas letras sem acentos, números e _.",
+        "duplicate": "Este username já está em uso."
+      }
     },
     "password": {
       "label": "Senha",
       "placeholder": "Crie uma senha",
-      "helper": "6 a 64 caracteres."
+      "helper": "6 a 64 caracteres.",
+      "errors": {
+        "required": "Informe uma senha.",
+        "length": "A senha deve ter de 6 a 64 caracteres.",
+        "invalidCharacters": "A senha contém caracteres não permitidos."
+      }
     },
     "confirmPassword": {
       "label": "Confirmar senha",
-      "placeholder": "Confirme sua senha"
+      "placeholder": "Confirme sua senha",
+      "errors": {
+        "required": "Confirme sua senha.",
+        "mismatch": "As senhas não coincidem."
+      }
     },
     "submit": {
       "label": "Criar conta",
-      "loading": "Criando conta..."
+      "loading": "Criando conta...",
+      "errors": {
+        "failed": "Não foi possível criar sua conta. Tente novamente."
+      }
     }
   }
 }
