@@ -6,7 +6,7 @@ export default function RegisterPage() {
   const { t } = useTranslation('register');
 
   return (
-    <main className="grid min-h-dvh place-items-center px-4 py-8 sm:px-6 sm:py-12">
+    <main className="grid flex-1 place-items-center px-4 py-8 sm:px-6 sm:py-12">
       <section
         aria-labelledby="register-title"
         className="w-full max-w-lg rounded-2xl border border-border bg-card p-6 shadow-xl sm:p-8"

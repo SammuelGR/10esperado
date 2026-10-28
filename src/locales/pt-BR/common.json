@@ -1,4 +1,12 @@
 {
+  "content": {
+    "header": {
+      "logo": {
+        "prefix": "10",
+        "name": "esperado"
+      }
+    }
+  },
   "form": {
     "password": {
       "visibility": {
