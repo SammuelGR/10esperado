@@ -29,3 +29,11 @@ Route groups follow the access convention: `_public/` for unauthenticated users 
 ## Internationalization
 
 Translation resources are bundled JSON files in `src/locales/pt-BR/`, separated into module namespaces. The `common` namespace holds shared interface text.
+
+## Testing
+
+Shared test support belongs in `src/test/`. Global setup handles environment defaults and cleanup; reusable render helpers provide the contexts required by the component under test. Each render creates an independent environment to prevent state leaking between tests.
+
+Component tests that need router context use `renderWithRouter` from `src/test/render.tsx`. It supplies an in-memory router without loading application routes, layouts, or access rules. This supports rendering real links and consuming router context while keeping assertions focused on the component's responsibility. Tests of navigation flows require explicit test routes; isolated tests of routing orchestration may mock router dependencies locally.
+
+Business dependencies and scenario data remain explicit in each test. Shared setup should not supply authentication results or application behavior that could conceal missing test preparation.

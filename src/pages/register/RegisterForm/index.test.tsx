@@ -1,11 +1,17 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { useAuth } from '@/contexts/AuthContext/useAuth';
 import { createUser } from '@/services/user';
+import { renderWithRouter } from '@/test/render';
 import type { User } from '@/types/user';
 
 import RegisterForm from './index';
+
+vi.mock('@/contexts/AuthContext/useAuth', () => ({
+  useAuth: vi.fn(),
+}));
 
 vi.mock('@/services/user', () => ({
   createUser: vi.fn(),
@@ -22,14 +28,19 @@ const fakeUser: User = {
   status: 'active',
 };
 
+const fakeLogin = vi.fn();
+
 describe('RegisterForm', () => {
   beforeEach(() => {
     vi.mocked(createUser).mockReset();
     vi.mocked(createUser).mockResolvedValue({ success: true, user: fakeUser });
+    fakeLogin.mockReset();
+    fakeLogin.mockResolvedValue({ success: true, user: fakeUser });
+    vi.mocked(useAuth).mockReturnValue({ user: null, login: fakeLogin, logout: vi.fn() });
   });
 
   it('renders form content correctly', () => {
-    render(<RegisterForm />);
+    renderWithRouter(<RegisterForm />);
 
     expect(screen.getByLabelText('form.username.label')).toHaveAttribute('placeholder', 'form.username.placeholder');
     expect(screen.getByLabelText('form.password.label')).toHaveAttribute('placeholder', 'form.password.placeholder');
@@ -42,10 +53,10 @@ describe('RegisterForm', () => {
     expect(screen.getByRole('button', { name: 'form.submit.label' })).toBeInTheDocument();
   });
 
-  it('submits valid credentials to create a user', async () => {
+  it('creates a user and logs in with the registered credentials', async () => {
     const user = userEvent.setup();
 
-    render(<RegisterForm />);
+    renderWithRouter(<RegisterForm />);
 
     await user.type(screen.getByLabelText('form.username.label'), fakeCredentials.username);
     await user.type(screen.getByLabelText('form.password.label'), fakeCredentials.password);
@@ -54,6 +65,32 @@ describe('RegisterForm', () => {
 
     await waitFor(() => {
       expect(createUser).toHaveBeenCalledExactlyOnceWith(fakeCredentials);
+      expect(fakeLogin).toHaveBeenCalledExactlyOnceWith(fakeCredentials);
+    });
+  });
+
+  it.each([
+    { scenario: 'returns a failure', result: { success: false, reason: 'invalidCredentials' } },
+    { scenario: 'throws an error', result: new Error('Fake login error') },
+  ])('redirects to login when authentication $scenario', async ({ result }) => {
+    const user = userEvent.setup();
+
+    if (result instanceof Error) {
+      fakeLogin.mockRejectedValue(result);
+    } else {
+      fakeLogin.mockResolvedValue(result);
+    }
+
+    const { router } = renderWithRouter(<RegisterForm />);
+    const navigate = vi.spyOn(router, 'navigate').mockResolvedValue(undefined);
+
+    await user.type(screen.getByLabelText('form.username.label'), fakeCredentials.username);
+    await user.type(screen.getByLabelText('form.password.label'), fakeCredentials.password);
+    await user.type(screen.getByLabelText('form.confirmPassword.label'), fakeCredentials.password);
+    await user.click(screen.getByRole('button', { name: 'form.submit.label' }));
+
+    await waitFor(() => {
+      expect(navigate).toHaveBeenCalledWith(expect.objectContaining({ to: '/login' }));
     });
   });
 
@@ -127,7 +164,7 @@ describe('RegisterForm', () => {
       ...overrides,
     };
 
-    render(<RegisterForm />);
+    renderWithRouter(<RegisterForm />);
 
     if (values.username) {
       await user.type(screen.getByLabelText('form.username.label'), values.username);
@@ -153,7 +190,7 @@ describe('RegisterForm', () => {
 
     vi.mocked(createUser).mockResolvedValue({ success: false, reason: 'usernameTaken' });
 
-    render(<RegisterForm />);
+    renderWithRouter(<RegisterForm />);
 
     await user.type(screen.getByLabelText('form.username.label'), fakeCredentials.username);
     await user.type(screen.getByLabelText('form.password.label'), fakeCredentials.password);
@@ -168,7 +205,7 @@ describe('RegisterForm', () => {
 
     vi.mocked(createUser).mockRejectedValue(new Error('fake error'));
 
-    render(<RegisterForm />);
+    renderWithRouter(<RegisterForm />);
 
     await user.type(screen.getByLabelText('form.username.label'), fakeCredentials.username);
     await user.type(screen.getByLabelText('form.password.label'), fakeCredentials.password);
@@ -183,7 +220,7 @@ describe('RegisterForm', () => {
 
     vi.mocked(createUser).mockReturnValue(new Promise(() => {}));
 
-    render(<RegisterForm />);
+    renderWithRouter(<RegisterForm />);
 
     expect(screen.getByText('form.submit.label')).toBeVisible();
     expect(screen.queryByText('form.submit.loading')).not.toBeInTheDocument();
