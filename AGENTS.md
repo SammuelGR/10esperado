@@ -51,6 +51,7 @@ If configuration, dependencies, or implementation prevent a required check, repo
   - Orchestrator components may mock child components and assert composition decisions.
   - Component tests should assert only the content and behavior owned by that component.
   - Content regression tests may render real component trees and use real data when the goal is to protect published content.
+- Use the shared `renderWithRouter` helper from `src/test/render.tsx` when component tests need router context. Keep router mocks local to tests that isolate routing dependencies. See [Testing](docs/architecture.md#testing) for the scope of the shared test environment.
 - Translation text assertions should usually target the i18n key rendered by the test mock, not the final translated copy. The goal is to verify that the correct translation key is wired into the UI.
 - Use explicit fixtures for fake data. Do not mix real production content into fake fixtures unless the test is intentionally validating real content.
 - Prefer clear inline assertions. Create local helpers only when they remove meaningful duplication and make the test easier to read.

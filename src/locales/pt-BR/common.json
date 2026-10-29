@@ -4,6 +4,14 @@
       "logo": {
         "prefix": "10",
         "name": "esperado"
+      },
+      "actions": {
+        "login": "Entrar",
+        "logout": "Sair",
+        "register": "Criar conta"
+      },
+      "userMenu": {
+        "label": "Menu de {{username}}"
       }
     }
   },

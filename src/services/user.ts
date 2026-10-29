@@ -26,6 +26,16 @@ function writeUsers(users: StoredUser[]): void {
   localStorage.setItem(STORAGE_KEYS.users, JSON.stringify(users));
 }
 
+export function findUserByUsername(username: string): StoredUser | null {
+  const normalizedUsername = username.toLowerCase();
+
+  return readUsers().find((user) => user.username.toLowerCase() === normalizedUsername) ?? null;
+}
+
+export function findUserById(id: string): StoredUser | null {
+  return readUsers().find((user) => user.id === id) ?? null;
+}
+
 export async function createUser({ username, password }: CreateUserParams): Promise<CreateUserResult> {
   const passwordHash = await hash(password, PASSWORD_HASH_COST);
 
