@@ -2,11 +2,13 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
 import common from '@/locales/pt-BR/common.json';
+import login from '@/locales/pt-BR/login.json';
 import register from '@/locales/pt-BR/register.json';
 
 export const resources = {
   'pt-BR': {
     common,
+    login,
     register,
   },
 } as const;

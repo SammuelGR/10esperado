@@ -1,3 +1,4 @@
+import { Link } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
 
 import RegisterForm from './RegisterForm';
@@ -20,6 +21,20 @@ export default function RegisterPage() {
         </header>
 
         <RegisterForm />
+
+        <footer className="mt-8 border-t border-border pt-6 text-center text-sm">
+          <p className="text-muted-foreground">
+            {t(($) => $.content.footer.description)}{' '}
+            <Link
+              className={`font-semibold text-primary transition-colors hover:text-primary/80
+                focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2
+                focus-visible:outline-primary`}
+              to="/login"
+            >
+              {t(($) => $.content.footer.login)}
+            </Link>
+          </p>
+        </footer>
       </section>
     </main>
   );

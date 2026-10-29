@@ -1,0 +1,37 @@
+{
+  "content": {
+    "header": {
+      "title": "Entrar",
+      "description": "Acesse sua conta para gerenciar seus quizzes."
+    },
+    "footer": {
+      "description": "Ainda não tem conta?",
+      "register": "Criar conta"
+    }
+  },
+  "form": {
+    "username": {
+      "label": "Username",
+      "placeholder": "Digite seu username",
+      "errors": {
+        "required": "Informe um username."
+      }
+    },
+    "password": {
+      "label": "Senha",
+      "placeholder": "Digite sua senha",
+      "errors": {
+        "required": "Informe uma senha."
+      }
+    },
+    "submit": {
+      "label": "Entrar",
+      "loading": "Entrando...",
+      "errors": {
+        "invalidCredentials": "Não foi possível entrar. Confira seu username e senha e tente novamente.",
+        "inactiveAccount": "Esta conta está desativada.",
+        "failed": "Não foi possível entrar. Tente novamente."
+      }
+    }
+  }
+}
