@@ -22,7 +22,7 @@ export default function Button({
       {...props}
       aria-busy={loading || undefined}
       className={cn(
-        `inline-flex min-h-12 items-center justify-center gap-2 rounded-lg bg-primary px-4 py-3 text-sm font-semibold
+        `inline-flex min-h-10 items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold
         text-primary-foreground transition-colors
         enabled:hover:bg-primary/90 focus-visible:outline-2 focus-visible:outline-offset-2
         focus-visible:outline-primary`,

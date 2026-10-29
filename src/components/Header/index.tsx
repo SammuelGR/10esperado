@@ -26,7 +26,23 @@ export default function Header() {
           <span>{t(($) => $.content.header.logo.name)}</span>
         </Link>
 
-        {user && <UserMenu />}
+        {user && (
+          <>
+            <nav className="hidden self-stretch sm:ml-14 sm:flex sm:flex-1">
+              <Link
+                className={`inline-flex items-center border-b-2 border-transparent text-sm font-medium
+                  text-muted-foreground transition-colors hover:text-primary focus-visible:outline-2
+                  focus-visible:outline-offset-2 focus-visible:outline-primary
+                  data-[status=active]:border-primary data-[status=active]:text-primary`}
+                to="/account"
+              >
+                {t(($) => $.content.header.actions.account)}
+              </Link>
+            </nav>
+
+            <UserMenu />
+          </>
+        )}
 
         {!user && (
           <nav className="flex items-center gap-4">

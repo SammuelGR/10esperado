@@ -36,7 +36,7 @@ describe('RegisterForm', () => {
     vi.mocked(createUser).mockResolvedValue({ success: true, user: fakeUser });
     fakeLogin.mockReset();
     fakeLogin.mockResolvedValue({ success: true, user: fakeUser });
-    vi.mocked(useAuth).mockReturnValue({ user: null, login: fakeLogin, logout: vi.fn() });
+    vi.mocked(useAuth, { partial: true }).mockReturnValue({ user: null, login: fakeLogin, logout: vi.fn() });
   });
 
   it('renders form content correctly', () => {

@@ -6,6 +6,7 @@
         "name": "esperado"
       },
       "actions": {
+        "account": "Minha conta",
         "login": "Entrar",
         "logout": "Sair",
         "register": "Criar conta"
