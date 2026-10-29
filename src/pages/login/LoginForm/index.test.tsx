@@ -28,7 +28,7 @@ describe('LoginForm', () => {
   beforeEach(() => {
     fakeLogin.mockReset();
     fakeLogin.mockResolvedValue({ success: true, user: fakeUser });
-    vi.mocked(useAuth).mockReturnValue({ user: null, login: fakeLogin, logout: vi.fn() });
+    vi.mocked(useAuth, { partial: true }).mockReturnValue({ user: null, login: fakeLogin, logout: vi.fn() });
   });
 
   it('renders form content correctly', () => {
