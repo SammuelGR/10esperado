@@ -20,8 +20,8 @@ export default function PasswordInput({ className, id, onToggleVisibility, visib
     <div className="relative">
       <Input
         {...props}
-        className={cn('pr-14', className)}
-        icon={<LockIcon className="size-5" />}
+        className={cn('pr-12', className)}
+        icon={<LockIcon className="size-4" />}
         id={id}
         type={visible ? 'text' : 'password'}
       />
@@ -30,14 +30,14 @@ export default function PasswordInput({ className, id, onToggleVisibility, visib
         aria-controls={id}
         aria-label={visible ? t(($) => $.form.password.visibility.hide) : t(($) => $.form.password.visibility.show)}
         className={cn(
-          `absolute inset-y-0 right-1 flex w-11 items-center justify-center rounded-md transition-colors
+          `absolute inset-y-0 right-1 flex w-9 items-center justify-center rounded-md transition-colors
           focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary`,
           isInvalid ? 'text-error' : 'text-muted-foreground hover:text-foreground',
         )}
         onClick={onToggleVisibility}
         type="button"
       >
-        <VisibilityIcon aria-hidden className="size-5" />
+        <VisibilityIcon aria-hidden className="size-4" />
       </button>
     </div>
   );

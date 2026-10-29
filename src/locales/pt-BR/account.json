@@ -1,0 +1,81 @@
+{
+  "content": {
+    "header": {
+      "title": "Minha conta",
+      "description": "Gerencie suas informações de acesso."
+    }
+  },
+  "username": {
+    "title": "Alterar username",
+    "current": "Username atual",
+    "label": "Novo username",
+    "placeholder": "Digite o novo username",
+    "helper": "3 a 24 caracteres.",
+    "action": "Salvar username",
+    "loading": "Salvando...",
+    "success": "Username alterado com sucesso.",
+    "errors": {
+      "required": "Informe um novo username.",
+      "length": "O username deve ter de 3 a 24 caracteres.",
+      "invalidCharacters": "Use apenas letras sem acentos, números e _.",
+      "usernameTaken": "Este username já está em uso.",
+      "userNotFound": "Não foi possível encontrar sua conta. Entre novamente.",
+      "unauthenticated": "Entre novamente para alterar seu username.",
+      "failed": "Não foi possível alterar seu username. Tente novamente."
+    }
+  },
+  "password": {
+    "title": "Alterar senha",
+    "current": {
+      "label": "Senha atual",
+      "placeholder": "Digite sua senha atual",
+      "errors": {
+        "required": "Informe sua senha atual."
+      }
+    },
+    "next": {
+      "label": "Nova senha",
+      "placeholder": "Digite a nova senha",
+      "helper": "6 a 64 caracteres.",
+      "errors": {
+        "required": "Informe uma nova senha.",
+        "length": "A senha deve ter de 6 a 64 caracteres.",
+        "invalidCharacters": "A senha contém caracteres não permitidos."
+      }
+    },
+    "confirm": {
+      "label": "Confirmar nova senha",
+      "placeholder": "Confirme a nova senha",
+      "errors": {
+        "required": "Confirme a nova senha.",
+        "mismatch": "As senhas não coincidem."
+      }
+    },
+    "action": "Salvar senha",
+    "loading": "Salvando...",
+    "success": "Senha alterada com sucesso.",
+    "errors": {
+      "incorrectCurrentPassword": "A senha atual está incorreta.",
+      "userNotFound": "Não foi possível encontrar sua conta. Entre novamente.",
+      "unauthenticated": "Entre novamente para alterar sua senha.",
+      "failed": "Não foi possível alterar sua senha. Tente novamente."
+    }
+  },
+  "deactivation": {
+    "title": "Desativar conta",
+    "description": "Sua conta será desativada. Seu username e seus quizzes serão preservados.",
+    "action": "Desativar conta",
+    "confirmation": {
+      "title": "Desativar conta?",
+      "warning": "Você perderá o acesso a esta conta e sua sessão será encerrada.",
+      "preservation": "Seu <strong>username continuará reservado</strong> e seus quizzes e demais dados associados serão preservados.",
+      "cancel": "Cancelar",
+      "loading": "Desativando...",
+      "errors": {
+        "userNotFound": "Não foi possível encontrar sua conta. Entre novamente.",
+        "unauthenticated": "Entre novamente para desativar sua conta.",
+        "failed": "Não foi possível desativar sua conta. Tente novamente."
+      }
+    }
+  }
+}

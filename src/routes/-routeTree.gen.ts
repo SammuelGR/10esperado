@@ -9,12 +9,18 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './__root'
+import { Route as PrivateRouteRouteImport } from './_private/route'
 import { Route as PublicRouteRouteImport } from './_public/route'
 import { Route as SharedRouteRouteImport } from './_shared/route'
+import { Route as PrivateAccountRouteImport } from './_private/account'
 import { Route as PublicLoginRouteImport } from './_public/login'
 import { Route as PublicRegisterRouteImport } from './_public/register'
 import { Route as SharedIndexRouteImport } from './_shared/index'
 
+const PrivateRouteRoute = PrivateRouteRouteImport.update({
+  id: '/_private',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PublicRouteRoute = PublicRouteRouteImport.update({
   id: '/_public',
   getParentRoute: () => rootRouteImport,
@@ -22,6 +28,11 @@ const PublicRouteRoute = PublicRouteRouteImport.update({
 const SharedRouteRoute = SharedRouteRouteImport.update({
   id: '/_shared',
   getParentRoute: () => rootRouteImport,
+} as any)
+const PrivateAccountRoute = PrivateAccountRouteImport.update({
+  id: '/account',
+  path: '/account',
+  getParentRoute: () => PrivateRouteRoute,
 } as any)
 const PublicLoginRoute = PublicLoginRouteImport.update({
   id: '/login',
@@ -41,43 +52,57 @@ const SharedIndexRoute = SharedIndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof SharedIndexRoute
+  '/account': typeof PrivateAccountRoute
   '/login': typeof PublicLoginRoute
   '/register': typeof PublicRegisterRoute
 }
 export interface FileRoutesByTo {
   '/': typeof SharedIndexRoute
+  '/account': typeof PrivateAccountRoute
   '/login': typeof PublicLoginRoute
   '/register': typeof PublicRegisterRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/_private': typeof PrivateRouteRouteWithChildren
   '/_public': typeof PublicRouteRouteWithChildren
   '/_shared': typeof SharedRouteRouteWithChildren
+  '/_private/account': typeof PrivateAccountRoute
   '/_public/login': typeof PublicLoginRoute
   '/_public/register': typeof PublicRegisterRoute
   '/_shared/': typeof SharedIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/register'
+  fullPaths: '/' | '/account' | '/login' | '/register'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/register'
+  to: '/' | '/account' | '/login' | '/register'
   id:
     | '__root__'
+    | '/_private'
     | '/_public'
     | '/_shared'
+    | '/_private/account'
     | '/_public/login'
     | '/_public/register'
     | '/_shared/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  PrivateRouteRoute: typeof PrivateRouteRouteWithChildren
   PublicRouteRoute: typeof PublicRouteRouteWithChildren
   SharedRouteRoute: typeof SharedRouteRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/_private': {
+      id: '/_private'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof PrivateRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_public': {
       id: '/_public'
       path: ''
@@ -91,6 +116,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof SharedRouteRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_private/account': {
+      id: '/_private/account'
+      path: '/account'
+      fullPath: '/account'
+      preLoaderRoute: typeof PrivateAccountRouteImport
+      parentRoute: typeof PrivateRouteRoute
     }
     '/_public/login': {
       id: '/_public/login'
@@ -115,6 +147,18 @@ declare module '@tanstack/react-router' {
     }
   }
 }
+
+interface PrivateRouteRouteChildren {
+  PrivateAccountRoute: typeof PrivateAccountRoute
+}
+
+const PrivateRouteRouteChildren: PrivateRouteRouteChildren = {
+  PrivateAccountRoute: PrivateAccountRoute,
+}
+
+const PrivateRouteRouteWithChildren = PrivateRouteRoute._addFileChildren(
+  PrivateRouteRouteChildren,
+)
 
 interface PublicRouteRouteChildren {
   PublicLoginRoute: typeof PublicLoginRoute
@@ -143,6 +187,7 @@ const SharedRouteRouteWithChildren = SharedRouteRoute._addFileChildren(
 )
 
 const rootRouteChildren: RootRouteChildren = {
+  PrivateRouteRoute: PrivateRouteRouteWithChildren,
   PublicRouteRoute: PublicRouteRouteWithChildren,
   SharedRouteRoute: SharedRouteRouteWithChildren,
 }

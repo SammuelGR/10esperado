@@ -28,19 +28,14 @@ const fakeUser: User = {
 
 describe('AppRouterProvider', () => {
   it('updates the router context and requests reevaluation when the user changes', () => {
-    const fakeActions = {
-      login: vi.fn(),
-      logout: vi.fn(),
-    };
-
-    vi.mocked(useAuth).mockReturnValue({ ...fakeActions, user: null });
+    vi.mocked(useAuth, { partial: true }).mockReturnValue({ user: null });
 
     const { rerender } = render(<AppRouterProvider />);
 
     expect(vi.mocked(RouterProvider).mock.lastCall?.[0].context).toEqual({ user: null });
 
     vi.mocked(router.invalidate).mockClear();
-    vi.mocked(useAuth).mockReturnValue({ ...fakeActions, user: fakeUser });
+    vi.mocked(useAuth, { partial: true }).mockReturnValue({ user: fakeUser });
 
     rerender(<AppRouterProvider />);
 

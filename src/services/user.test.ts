@@ -1,8 +1,9 @@
-import { describe, expect, it } from 'vitest';
+import { compare, hash } from 'bcryptjs';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 import { STORAGE_KEYS } from '@/constants/storage';
 
-import { createUser, findUserById, findUserByUsername } from './user';
+import { createUser, deactivateUser, findUserById, findUserByUsername, updatePassword, updateUsername } from './user';
 
 const fakeCredentials = {
   username: 'fake_user',
@@ -74,5 +75,99 @@ describe('findUserById', () => {
 
     expect(findUserById('other-user-id')).toEqual(fakeStoredUsers[1]);
     expect(findUserById('missing-user-id')).toBeNull();
+  });
+});
+
+describe('updateUsername', () => {
+  beforeEach(() => {
+    localStorage.setItem(STORAGE_KEYS.users, JSON.stringify(fakeStoredUsers));
+  });
+
+  it.each(['updated_user', 'FAKE_USER'])('updates and persists the username to %s', (username) => {
+    const result = updateUsername({ userId: 'fake-user-id', username });
+
+    expect(result).toEqual({
+      success: true,
+      user: { id: 'fake-user-id', username, status: 'active' },
+    });
+    expect(findUserById('fake-user-id')?.username).toBe(username);
+  });
+
+  it('rejects a username taken by another user case-insensitively', () => {
+    const result = updateUsername({ userId: 'fake-user-id', username: 'OTHER_USER' });
+
+    expect(result).toEqual({ success: false, reason: 'usernameTaken' });
+  });
+
+  it('rejects an unknown user', () => {
+    const result = updateUsername({ userId: 'missing-user-id', username: 'updated_user' });
+
+    expect(result).toEqual({ success: false, reason: 'userNotFound' });
+  });
+});
+
+describe('updatePassword', () => {
+  const fakeNewPassword = 'NewFakePassword123!';
+
+  beforeEach(async () => {
+    const passwordHash = await hash(fakeCredentials.password, 10);
+
+    localStorage.setItem(
+      STORAGE_KEYS.users,
+      JSON.stringify([{ ...fakeStoredUsers[0], passwordHash }, fakeStoredUsers[1]]),
+    );
+  });
+
+  it('updates and persists the password', async () => {
+    const result = await updatePassword({
+      userId: 'fake-user-id',
+      currentPassword: fakeCredentials.password,
+      newPassword: fakeNewPassword,
+    });
+
+    const passwordHash = findUserById('fake-user-id')?.passwordHash ?? '';
+
+    expect(result).toEqual({ success: true });
+    expect(await compare(fakeNewPassword, passwordHash)).toBe(true);
+    expect(await compare(fakeCredentials.password, passwordHash)).toBe(false);
+  });
+
+  it('rejects an incorrect current password', async () => {
+    const result = await updatePassword({
+      userId: 'fake-user-id',
+      currentPassword: 'IncorrectFakePassword123!',
+      newPassword: fakeNewPassword,
+    });
+
+    expect(result).toEqual({ success: false, reason: 'incorrectCurrentPassword' });
+  });
+
+  it('rejects an unknown user', async () => {
+    const result = await updatePassword({
+      userId: 'missing-user-id',
+      currentPassword: fakeCredentials.password,
+      newPassword: fakeNewPassword,
+    });
+
+    expect(result).toEqual({ success: false, reason: 'userNotFound' });
+  });
+});
+
+describe('deactivateUser', () => {
+  beforeEach(() => {
+    localStorage.setItem(STORAGE_KEYS.users, JSON.stringify(fakeStoredUsers));
+  });
+
+  it('marks the user as inactive', () => {
+    const result = deactivateUser('fake-user-id');
+
+    expect(result).toEqual({ success: true });
+    expect(findUserById('fake-user-id')?.status).toBe('inactive');
+  });
+
+  it('rejects an unknown user', () => {
+    const result = deactivateUser('missing-user-id');
+
+    expect(result).toEqual({ success: false, reason: 'userNotFound' });
   });
 });

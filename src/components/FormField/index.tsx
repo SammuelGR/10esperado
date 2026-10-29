@@ -15,8 +15,8 @@ export default function FormField({ children, className, error, helper, htmlFor,
   const message = error || helper;
 
   return (
-    <div className={cn('space-y-2', className)}>
-      <label className="block text-sm font-medium" htmlFor={htmlFor}>
+    <div className={cn('space-y-1', className)}>
+      <label className="block text-xs font-medium" htmlFor={htmlFor}>
         {label}
       </label>
 
@@ -24,7 +24,7 @@ export default function FormField({ children, className, error, helper, htmlFor,
 
       {message && (
         <p
-          className={cn('text-sm text-muted-foreground', error && 'text-error')}
+          className={cn('text-xs text-muted-foreground', error && 'text-error')}
           id={`${htmlFor}-message`}
           role={error ? 'alert' : undefined}
         >

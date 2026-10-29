@@ -23,7 +23,7 @@ const fakeUser: User = {
 
 describe('Header', () => {
   beforeEach(() => {
-    vi.mocked(useAuth).mockReturnValue({ user: null, login: vi.fn(), logout: vi.fn() });
+    vi.mocked(useAuth, { partial: true }).mockReturnValue({ user: null });
   });
 
   it('renders the logo and public links for guests on the root route', () => {
@@ -40,6 +40,7 @@ describe('Header', () => {
     expect(loginLink).toHaveAttribute('href', '/login');
     expect(registerLink).toBeVisible();
     expect(registerLink).toHaveAttribute('href', '/register');
+    expect(screen.queryByRole('link', { name: 'content.header.actions.account' })).not.toBeInTheDocument();
     expect(screen.queryByTestId('user-menu-mock')).not.toBeInTheDocument();
   });
 
@@ -57,11 +58,15 @@ describe('Header', () => {
     expect(screen.queryByRole('link', { name: 'content.header.actions.register' })).not.toBeInTheDocument();
   });
 
-  it('shows the user menu and hides public links for authenticated users', () => {
-    vi.mocked(useAuth).mockReturnValue({ user: fakeUser, login: vi.fn(), logout: vi.fn() });
+  it('shows account navigation and hides public links for authenticated users', () => {
+    vi.mocked(useAuth, { partial: true }).mockReturnValue({ user: fakeUser });
 
     renderWithRouter(<Header />);
 
+    const accountLink = screen.getByRole('link', { name: 'content.header.actions.account' });
+
+    expect(accountLink).toBeVisible();
+    expect(accountLink).toHaveAttribute('href', '/account');
     expect(screen.getByTestId('user-menu-mock')).toBeInTheDocument();
     expect(screen.queryByRole('link', { name: 'content.header.actions.login' })).not.toBeInTheDocument();
     expect(screen.queryByRole('link', { name: 'content.header.actions.register' })).not.toBeInTheDocument();
