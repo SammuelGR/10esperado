@@ -1,4 +1,4 @@
-import { hash } from 'bcryptjs';
+import { compare, hash } from 'bcryptjs';
 
 import { STORAGE_KEYS } from '@/constants/storage';
 import type { User } from '@/types/user';
@@ -15,6 +15,12 @@ interface UpdateUsernameParams {
   username: string;
 }
 
+export interface UpdatePasswordParams {
+  userId: string;
+  currentPassword: string;
+  newPassword: string;
+}
+
 interface StoredUser extends User {
   passwordHash: string;
 }
@@ -23,6 +29,9 @@ type CreateUserResult = { success: true; user: User } | { success: false; reason
 
 export type UpdateUsernameResult =
   { success: true; user: User } | { success: false; reason: 'userNotFound' | 'usernameTaken' };
+
+export type UpdatePasswordResult =
+  { success: true } | { success: false; reason: 'userNotFound' | 'incorrectCurrentPassword' };
 
 function readUsers(): StoredUser[] {
   const storedUsers = localStorage.getItem(STORAGE_KEYS.users);
@@ -88,4 +97,37 @@ export function updateUsername({ userId, username }: UpdateUsernameParams): Upda
   writeUsers(users.map((storedUser) => (storedUser.id === userId ? { ...storedUser, username } : storedUser)));
 
   return { success: true, user };
+}
+
+export async function updatePassword({
+  userId,
+  currentPassword,
+  newPassword,
+}: UpdatePasswordParams): Promise<UpdatePasswordResult> {
+  const existingUser = findUserById(userId);
+
+  if (!existingUser) {
+    return { success: false, reason: 'userNotFound' };
+  }
+
+  if (!(await compare(currentPassword, existingUser.passwordHash))) {
+    return { success: false, reason: 'incorrectCurrentPassword' };
+  }
+
+  const passwordHash = await hash(newPassword, PASSWORD_HASH_COST);
+  const users = readUsers();
+  const currentUser = users.find((user) => user.id === userId);
+
+  if (!currentUser) {
+    return { success: false, reason: 'userNotFound' };
+  }
+
+  // Preserve concurrent edits and reject a current password that changed while hashing.
+  if (currentUser.passwordHash !== existingUser.passwordHash) {
+    return { success: false, reason: 'incorrectCurrentPassword' };
+  }
+
+  writeUsers(users.map((storedUser) => (storedUser.id === userId ? { ...storedUser, passwordHash } : storedUser)));
+
+  return { success: true };
 }

@@ -1,17 +1,21 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import type { SubmitEvent } from 'react';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
 import { Button, FormField, PasswordInput } from '@/components';
+import { useAuth } from '@/contexts/AuthContext/useAuth';
 
 import { createPasswordSchema } from '../schema';
 
 export default function PasswordForm() {
   const { t } = useTranslation('account');
+  const { updatePassword } = useAuth();
 
   const [showPassword, setShowPassword] = useState(false);
+  const [passwordSaved, setPasswordSaved] = useState(false);
+  const submissionInProgress = useRef(false);
 
   const schema = createPasswordSchema({
     currentPassword: {
@@ -31,7 +35,9 @@ export default function PasswordForm() {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitted, touchedFields },
+    reset,
+    setError,
+    formState: { errors, isSubmitted, isSubmitting, touchedFields },
   } = useForm({
     defaultValues: {
       currentPassword: '',
@@ -43,11 +49,45 @@ export default function PasswordForm() {
     resolver: zodResolver(schema),
   });
 
-  const submitForm = handleSubmit(() => undefined);
+  const submitForm = handleSubmit(async ({ currentPassword, newPassword }) => {
+    try {
+      const result = await updatePassword({ currentPassword, newPassword });
+
+      if (!result.success) {
+        setError(result.reason === 'incorrectCurrentPassword' ? 'currentPassword' : 'root.submit', {
+          type: 'manual',
+          message: t(($) => $.password.errors[result.reason]),
+        });
+
+        return;
+      }
+
+      reset();
+      setShowPassword(false);
+      setPasswordSaved(true);
+    } catch {
+      setError('root.submit', {
+        type: 'manual',
+        message: t(($) => $.password.errors.failed),
+      });
+    }
+  });
 
   async function onSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
-    await submitForm();
+
+    if (submissionInProgress.current) {
+      return;
+    }
+
+    submissionInProgress.current = true;
+    setPasswordSaved(false);
+
+    try {
+      await submitForm();
+    } finally {
+      submissionInProgress.current = false;
+    }
   }
 
   function togglePasswordVisibility() {
@@ -72,10 +112,11 @@ export default function PasswordForm() {
           label={t(($) => $.password.current.label)}
         >
           <PasswordInput
-            {...register('currentPassword')}
+            {...register('currentPassword', { onChange: () => setPasswordSaved(false) })}
             aria-describedby={errors.currentPassword ? 'account-current-password-message' : undefined}
             aria-invalid={Boolean(errors.currentPassword)}
             autoComplete="current-password"
+            disabled={isSubmitting}
             id="account-current-password"
             onToggleVisibility={togglePasswordVisibility}
             placeholder={t(($) => $.password.current.placeholder)}
@@ -92,10 +133,12 @@ export default function PasswordForm() {
           <PasswordInput
             {...register('newPassword', {
               deps: touchedFields.confirmPassword || isSubmitted ? 'confirmPassword' : undefined,
+              onChange: () => setPasswordSaved(false),
             })}
             aria-describedby="account-new-password-message"
             aria-invalid={Boolean(errors.newPassword)}
             autoComplete="new-password"
+            disabled={isSubmitting}
             id="account-new-password"
             onToggleVisibility={togglePasswordVisibility}
             placeholder={t(($) => $.password.next.placeholder)}
@@ -109,10 +152,11 @@ export default function PasswordForm() {
           label={t(($) => $.password.confirm.label)}
         >
           <PasswordInput
-            {...register('confirmPassword')}
+            {...register('confirmPassword', { onChange: () => setPasswordSaved(false) })}
             aria-describedby={errors.confirmPassword ? 'account-confirm-password-message' : undefined}
             aria-invalid={Boolean(errors.confirmPassword)}
             autoComplete="new-password"
+            disabled={isSubmitting}
             id="account-confirm-password"
             onToggleVisibility={togglePasswordVisibility}
             placeholder={t(($) => $.password.confirm.placeholder)}
@@ -122,10 +166,23 @@ export default function PasswordForm() {
       </div>
 
       <div className="mt-5 flex sm:justify-end">
-        <Button className="w-full sm:w-40" type="submit">
+        <Button
+          className="w-full sm:w-40"
+          loading={isSubmitting}
+          loadingText={t(($) => $.password.loading)}
+          type="submit"
+        >
           {t(($) => $.password.action)}
         </Button>
       </div>
+
+      {errors.root?.submit?.message && (
+        <p className="mt-4 text-xs text-error" role="alert">
+          {errors.root.submit.message}
+        </p>
+      )}
+
+      {passwordSaved && <output className="mt-4 block text-xs text-primary">{t(($) => $.password.success)}</output>}
     </form>
   );
 }

@@ -51,7 +51,15 @@
         "mismatch": "As senhas não coincidem."
       }
     },
-    "action": "Salvar senha"
+    "action": "Salvar senha",
+    "loading": "Salvando...",
+    "success": "Senha alterada com sucesso.",
+    "errors": {
+      "incorrectCurrentPassword": "A senha atual está incorreta.",
+      "userNotFound": "Não foi possível encontrar sua conta. Entre novamente.",
+      "unauthenticated": "Entre novamente para alterar sua senha.",
+      "failed": "Não foi possível alterar sua senha. Tente novamente."
+    }
   },
   "deactivation": {
     "title": "Desativar conta",
