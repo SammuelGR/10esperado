@@ -11,11 +11,11 @@ export default function Input({ className, icon, ...props }: InputProps) {
     <div className="relative">
       <input
         className={cn(
-          `peer min-h-12 w-full rounded-lg border border-border bg-input px-4 py-3 text-base text-foreground
+          `peer min-h-10 w-full rounded-lg border border-border bg-input px-3 py-2 text-sm text-foreground
           transition-colors placeholder:text-muted-foreground focus-visible:border-primary
           focus-visible:outline-hidden disabled:opacity-50 aria-invalid:border-error aria-invalid:bg-error/5
           aria-invalid:focus-visible:border-error`,
-          icon && 'pl-11',
+          icon && 'pl-10',
           className,
         )}
         {...props}
@@ -24,8 +24,9 @@ export default function Input({ className, icon, ...props }: InputProps) {
       {icon && (
         <span
           aria-hidden
-          className={`pointer-events-none absolute inset-y-0 left-4 flex items-center text-muted-foreground
-            transition-colors peer-focus-visible:text-primary peer-disabled:opacity-50 peer-aria-invalid:text-error`}
+          className={`pointer-events-none absolute inset-y-0 left-3 flex items-center text-muted-foreground
+            transition-colors peer-focus-visible:text-primary peer-disabled:opacity-50 peer-aria-invalid:text-error
+            [&_svg]:size-4`}
         >
           {icon}
         </span>

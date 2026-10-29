@@ -1,4 +1,5 @@
-import { ChevronDown as ChevronDownIcon, LogOut as LogOutIcon, Menu as MenuIcon } from 'lucide-react';
+import { Link } from '@tanstack/react-router';
+import { ChevronDown as ChevronDownIcon, LogOut as LogOutIcon, Menu as MenuIcon, User as UserIcon } from 'lucide-react';
 import { useId } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -37,6 +38,17 @@ export default function UserMenu() {
         id={popoverId}
         popover="auto"
       >
+        <Link
+          className={`flex min-h-10 w-full items-center gap-3 rounded-md px-3 py-2 text-left text-sm
+            transition-colors hover:bg-input focus-visible:bg-input focus-visible:outline-2
+            focus-visible:-outline-offset-2 focus-visible:outline-primary`}
+          to="/account"
+        >
+          <UserIcon aria-hidden className="size-4 shrink-0" />
+
+          {t(($) => $.content.header.actions.account)}
+        </Link>
+
         <button
           className={`flex min-h-10 w-full items-center gap-3 rounded-md px-3 py-2 text-left text-sm
             transition-colors hover:bg-input focus-visible:bg-input focus-visible:outline-2
