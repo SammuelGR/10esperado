@@ -33,6 +33,8 @@ export type UpdateUsernameResult =
 export type UpdatePasswordResult =
   { success: true } | { success: false; reason: 'userNotFound' | 'incorrectCurrentPassword' };
 
+export type DeactivateUserResult = { success: true } | { success: false; reason: 'userNotFound' };
+
 function readUsers(): StoredUser[] {
   const storedUsers = localStorage.getItem(STORAGE_KEYS.users);
 
@@ -128,6 +130,20 @@ export async function updatePassword({
   }
 
   writeUsers(users.map((storedUser) => (storedUser.id === userId ? { ...storedUser, passwordHash } : storedUser)));
+
+  return { success: true };
+}
+
+export function deactivateUser(userId: string): DeactivateUserResult {
+  const users = readUsers();
+
+  if (!users.some((user) => user.id === userId)) {
+    return { success: false, reason: 'userNotFound' };
+  }
+
+  writeUsers(
+    users.map((storedUser) => (storedUser.id === userId ? { ...storedUser, status: 'inactive' } : storedUser)),
+  );
 
   return { success: true };
 }

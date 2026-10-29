@@ -2,11 +2,11 @@ import { type ReactNode, useCallback, useMemo, useState } from 'react';
 
 import { authenticateUser, endSession, restoreSession, startSession as persistSession } from '@/services/auth';
 import type { AuthenticateUserParams } from '@/services/auth';
-import { updatePassword as persistPassword, updateUsername as persistUsername } from '@/services/user';
+import { deactivateUser, updatePassword as persistPassword, updateUsername as persistUsername } from '@/services/user';
 import type { UpdatePasswordParams } from '@/services/user';
 
 import { AuthContext } from './context';
-import type { UpdatePasswordActionResult, UpdateUsernameActionResult } from './context';
+import type { DeactivateAccountActionResult, UpdatePasswordActionResult, UpdateUsernameActionResult } from './context';
 
 interface AuthProviderProps {
   children: ReactNode;
@@ -59,9 +59,23 @@ export default function AuthProvider({ children }: AuthProviderProps) {
     [user],
   );
 
+  const deactivateAccount = useCallback((): DeactivateAccountActionResult => {
+    if (!user || restoreSession()?.id !== user.id) {
+      return { success: false, reason: 'unauthenticated' };
+    }
+
+    const result = deactivateUser(user.id);
+
+    if (result.success) {
+      logout();
+    }
+
+    return result;
+  }, [user, logout]);
+
   const value = useMemo(
-    () => ({ user, login, logout, updateUsername, updatePassword }),
-    [user, login, logout, updateUsername, updatePassword],
+    () => ({ user, login, logout, updateUsername, updatePassword, deactivateAccount }),
+    [user, login, logout, updateUsername, updatePassword, deactivateAccount],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

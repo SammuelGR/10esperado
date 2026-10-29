@@ -69,7 +69,13 @@
       "title": "Desativar conta?",
       "warning": "Você perderá o acesso a esta conta e sua sessão será encerrada.",
       "preservation": "Seu <strong>username continuará reservado</strong> e seus quizzes e demais dados associados serão preservados.",
-      "cancel": "Cancelar"
+      "cancel": "Cancelar",
+      "loading": "Desativando...",
+      "errors": {
+        "userNotFound": "Não foi possível encontrar sua conta. Entre novamente.",
+        "unauthenticated": "Entre novamente para desativar sua conta.",
+        "failed": "Não foi possível desativar sua conta. Tente novamente."
+      }
     }
   }
 }
