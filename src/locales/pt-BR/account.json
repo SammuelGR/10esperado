@@ -12,10 +12,16 @@
     "placeholder": "Digite o novo username",
     "helper": "3 a 24 caracteres.",
     "action": "Salvar username",
+    "loading": "Salvando...",
+    "success": "Username alterado com sucesso.",
     "errors": {
       "required": "Informe um novo username.",
       "length": "O username deve ter de 3 a 24 caracteres.",
-      "invalidCharacters": "Use apenas letras sem acentos, números e _."
+      "invalidCharacters": "Use apenas letras sem acentos, números e _.",
+      "usernameTaken": "Este username já está em uso.",
+      "userNotFound": "Não foi possível encontrar sua conta. Entre novamente.",
+      "unauthenticated": "Entre novamente para alterar seu username.",
+      "failed": "Não foi possível alterar seu username. Tente novamente."
     }
   },
   "password": {

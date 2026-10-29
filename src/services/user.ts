@@ -10,11 +10,19 @@ interface CreateUserParams {
   password: string;
 }
 
+interface UpdateUsernameParams {
+  userId: string;
+  username: string;
+}
+
 interface StoredUser extends User {
   passwordHash: string;
 }
 
 type CreateUserResult = { success: true; user: User } | { success: false; reason: 'usernameTaken' };
+
+export type UpdateUsernameResult =
+  { success: true; user: User } | { success: false; reason: 'userNotFound' | 'usernameTaken' };
 
 function readUsers(): StoredUser[] {
   const storedUsers = localStorage.getItem(STORAGE_KEYS.users);
@@ -53,6 +61,31 @@ export async function createUser({ username, password }: CreateUserParams): Prom
   };
 
   writeUsers([...users, { ...user, passwordHash }]);
+
+  return { success: true, user };
+}
+
+export function updateUsername({ userId, username }: UpdateUsernameParams): UpdateUsernameResult {
+  const users = readUsers();
+  const existingUser = users.find((user) => user.id === userId);
+
+  if (!existingUser) {
+    return { success: false, reason: 'userNotFound' };
+  }
+
+  const normalizedUsername = username.toLowerCase();
+
+  if (users.some((user) => user.id !== userId && user.username.toLowerCase() === normalizedUsername)) {
+    return { success: false, reason: 'usernameTaken' };
+  }
+
+  const user: User = {
+    id: existingUser.id,
+    username,
+    status: existingUser.status,
+  };
+
+  writeUsers(users.map((storedUser) => (storedUser.id === userId ? { ...storedUser, username } : storedUser)));
 
   return { success: true, user };
 }

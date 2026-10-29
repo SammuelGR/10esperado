@@ -1,10 +1,12 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { User as UserIcon } from 'lucide-react';
 import type { SubmitEvent } from 'react';
+import { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
 import { Button, FormField, Input } from '@/components';
+import { useAuth } from '@/contexts/AuthContext/useAuth';
 
 import { createUsernameSchema } from '../schema';
 
@@ -14,6 +16,10 @@ interface UsernameFormProps {
 
 export default function UsernameForm({ username }: UsernameFormProps) {
   const { t } = useTranslation('account');
+  const { updateUsername } = useAuth();
+
+  const [usernameSaved, setUsernameSaved] = useState(false);
+  const submissionInProgress = useRef(false);
 
   const schema = createUsernameSchema({
     username: {
@@ -26,7 +32,9 @@ export default function UsernameForm({ username }: UsernameFormProps) {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    reset,
+    setError,
+    formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: {
       username: '',
@@ -36,11 +44,44 @@ export default function UsernameForm({ username }: UsernameFormProps) {
     resolver: zodResolver(schema),
   });
 
-  const submitForm = handleSubmit(() => undefined);
+  const submitForm = handleSubmit(({ username: newUsername }) => {
+    try {
+      const result = updateUsername(newUsername);
+
+      if (!result.success) {
+        setError(result.reason === 'usernameTaken' ? 'username' : 'root.submit', {
+          type: 'manual',
+          message: t(($) => $.username.errors[result.reason]),
+        });
+
+        return;
+      }
+
+      reset();
+      setUsernameSaved(true);
+    } catch {
+      setError('root.submit', {
+        type: 'manual',
+        message: t(($) => $.username.errors.failed),
+      });
+    }
+  });
 
   async function onSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
-    await submitForm();
+
+    if (submissionInProgress.current) {
+      return;
+    }
+
+    submissionInProgress.current = true;
+    setUsernameSaved(false);
+
+    try {
+      await submitForm();
+    } finally {
+      submissionInProgress.current = false;
+    }
   }
 
   return (
@@ -68,10 +109,11 @@ export default function UsernameForm({ username }: UsernameFormProps) {
           label={t(($) => $.username.label)}
         >
           <Input
-            {...register('username')}
+            {...register('username', { onChange: () => setUsernameSaved(false) })}
             aria-describedby="account-username-message"
             aria-invalid={Boolean(errors.username)}
             autoComplete="username"
+            disabled={isSubmitting}
             icon={<UserIcon className="size-4" />}
             id="account-username"
             placeholder={t(($) => $.username.placeholder)}
@@ -79,10 +121,23 @@ export default function UsernameForm({ username }: UsernameFormProps) {
           />
         </FormField>
 
-        <Button className="w-full sm:mt-5 sm:w-40" type="submit">
+        <Button
+          className="w-full sm:mt-5 sm:w-40"
+          loading={isSubmitting}
+          loadingText={t(($) => $.username.loading)}
+          type="submit"
+        >
           {t(($) => $.username.action)}
         </Button>
       </div>
+
+      {errors.root?.submit?.message && (
+        <p className="mt-4 text-xs text-error" role="alert">
+          {errors.root.submit.message}
+        </p>
+      )}
+
+      {usernameSaved && <output className="mt-4 block text-xs text-primary">{t(($) => $.username.success)}</output>}
     </form>
   );
 }
