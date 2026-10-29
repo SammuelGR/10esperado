@@ -3,6 +3,10 @@
     "header": {
       "title": "Criar conta",
       "description": "Crie sua conta para acessar e gerenciar seus quizzes."
+    },
+    "footer": {
+      "description": "Já tem uma conta?",
+      "login": "Entrar"
     }
   },
   "form": {

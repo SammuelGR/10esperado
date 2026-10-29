@@ -9,50 +9,142 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './__root'
-import { Route as RegisterRouteImport } from './register'
+import { Route as PublicRouteRouteImport } from './_public/route'
+import { Route as SharedRouteRouteImport } from './_shared/route'
+import { Route as PublicLoginRouteImport } from './_public/login'
+import { Route as PublicRegisterRouteImport } from './_public/register'
+import { Route as SharedIndexRouteImport } from './_shared/index'
 
-const RegisterRoute = RegisterRouteImport.update({
+const PublicRouteRoute = PublicRouteRouteImport.update({
+  id: '/_public',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SharedRouteRoute = SharedRouteRouteImport.update({
+  id: '/_shared',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PublicLoginRoute = PublicLoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => PublicRouteRoute,
+} as any)
+const PublicRegisterRoute = PublicRegisterRouteImport.update({
   id: '/register',
   path: '/register',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => PublicRouteRoute,
+} as any)
+const SharedIndexRoute = SharedIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => SharedRouteRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/register': typeof RegisterRoute
+  '/': typeof SharedIndexRoute
+  '/login': typeof PublicLoginRoute
+  '/register': typeof PublicRegisterRoute
 }
 export interface FileRoutesByTo {
-  '/register': typeof RegisterRoute
+  '/': typeof SharedIndexRoute
+  '/login': typeof PublicLoginRoute
+  '/register': typeof PublicRegisterRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/register': typeof RegisterRoute
+  '/_public': typeof PublicRouteRouteWithChildren
+  '/_shared': typeof SharedRouteRouteWithChildren
+  '/_public/login': typeof PublicLoginRoute
+  '/_public/register': typeof PublicRegisterRoute
+  '/_shared/': typeof SharedIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/register'
+  fullPaths: '/' | '/login' | '/register'
   fileRoutesByTo: FileRoutesByTo
-  to: '/register'
-  id: '__root__' | '/register'
+  to: '/' | '/login' | '/register'
+  id:
+    | '__root__'
+    | '/_public'
+    | '/_shared'
+    | '/_public/login'
+    | '/_public/register'
+    | '/_shared/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  RegisterRoute: typeof RegisterRoute
+  PublicRouteRoute: typeof PublicRouteRouteWithChildren
+  SharedRouteRoute: typeof SharedRouteRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/register': {
-      id: '/register'
+    '/_public': {
+      id: '/_public'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof PublicRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_shared': {
+      id: '/_shared'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof SharedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_public/login': {
+      id: '/_public/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof PublicLoginRouteImport
+      parentRoute: typeof PublicRouteRoute
+    }
+    '/_public/register': {
+      id: '/_public/register'
       path: '/register'
       fullPath: '/register'
-      preLoaderRoute: typeof RegisterRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof PublicRegisterRouteImport
+      parentRoute: typeof PublicRouteRoute
+    }
+    '/_shared/': {
+      id: '/_shared/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof SharedIndexRouteImport
+      parentRoute: typeof SharedRouteRoute
     }
   }
 }
 
+interface PublicRouteRouteChildren {
+  PublicLoginRoute: typeof PublicLoginRoute
+  PublicRegisterRoute: typeof PublicRegisterRoute
+}
+
+const PublicRouteRouteChildren: PublicRouteRouteChildren = {
+  PublicLoginRoute: PublicLoginRoute,
+  PublicRegisterRoute: PublicRegisterRoute,
+}
+
+const PublicRouteRouteWithChildren = PublicRouteRoute._addFileChildren(
+  PublicRouteRouteChildren,
+)
+
+interface SharedRouteRouteChildren {
+  SharedIndexRoute: typeof SharedIndexRoute
+}
+
+const SharedRouteRouteChildren: SharedRouteRouteChildren = {
+  SharedIndexRoute: SharedIndexRoute,
+}
+
+const SharedRouteRouteWithChildren = SharedRouteRoute._addFileChildren(
+  SharedRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
-  RegisterRoute: RegisterRoute,
+  PublicRouteRoute: PublicRouteRouteWithChildren,
+  SharedRouteRoute: SharedRouteRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -1,16 +1,20 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useNavigate } from '@tanstack/react-router';
 import { User as UserIcon } from 'lucide-react';
 import { type SubmitEvent, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
 import { Button, FormField, Input, PasswordInput } from '@/components';
+import { useAuth } from '@/contexts/AuthContext/useAuth';
 import { createUser } from '@/services/user';
 
 import { createRegisterSchema } from './schema';
 
 export default function RegisterForm() {
   const { t } = useTranslation('register');
+  const { login } = useAuth();
+  const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -66,6 +70,14 @@ export default function RegisterForm() {
         type: 'manual',
         message: t(($) => $.form.submit.errors.failed),
       });
+
+      return;
+    }
+
+    const loginResult = await login({ username, password }).catch(() => null);
+
+    if (!loginResult?.success) {
+      await navigate({ to: '/login', replace: true });
     }
   });
 
