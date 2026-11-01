@@ -2,8 +2,16 @@ import { Search as SearchIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 import { Input, Select } from '@/components';
+import type { ActiveQuiz } from '@/types/quiz';
 
-export default function Filters() {
+interface FiltersProps {
+  search: string;
+  status: 'all' | ActiveQuiz['status'];
+  onSearchChange: (search: string) => void;
+  onStatusChange: (status: FiltersProps['status']) => void;
+}
+
+export default function Filters({ search, status, onSearchChange, onStatusChange }: FiltersProps) {
   const { t } = useTranslation('myQuizzes');
 
   return (
@@ -12,13 +20,19 @@ export default function Filters() {
         <Input
           aria-label={t(($) => $.content.filters.search.label)}
           icon={<SearchIcon className="size-4" />}
+          onChange={(event) => onSearchChange(event.target.value)}
           placeholder={t(($) => $.content.filters.search.placeholder)}
           type="search"
+          value={search}
         />
       </div>
 
       <div className="w-full sm:w-44">
-        <Select aria-label={t(($) => $.content.filters.status.label)} defaultValue="all">
+        <Select
+          aria-label={t(($) => $.content.filters.status.label)}
+          onChange={(event) => onStatusChange(event.target.value as FiltersProps['status'])}
+          value={status}
+        >
           <option value="all">{t(($) => $.content.filters.status.options.all)}</option>
 
           <option value="draft">{t(($) => $.content.filters.status.options.draft)}</option>

@@ -1,3 +1,4 @@
+import { useNavigate } from '@tanstack/react-router';
 import { FileText as FileTextIcon, Plus as PlusIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
@@ -5,10 +6,20 @@ import { Button } from '@/components';
 
 interface EmptyStateProps {
   variant?: 'empty' | 'noResults';
+  onClearFilters?: () => void;
 }
 
-export default function EmptyState({ variant = 'empty' }: EmptyStateProps) {
+export default function EmptyState({ variant = 'empty', onClearFilters }: EmptyStateProps) {
   const { t } = useTranslation('myQuizzes');
+  const navigate = useNavigate();
+
+  function onActionClick() {
+    if (variant === 'empty') {
+      return navigate({ to: '/my-quizzes/new' });
+    }
+
+    onClearFilters?.();
+  }
 
   return (
     <div
@@ -29,7 +40,7 @@ export default function EmptyState({ variant = 'empty' }: EmptyStateProps) {
         </p>
       )}
 
-      <Button className="mt-6" variant={variant === 'empty' ? 'primary' : 'secondary'}>
+      <Button className="mt-6" onClick={onActionClick} variant={variant === 'empty' ? 'primary' : 'secondary'}>
         {variant === 'empty' && <PlusIcon aria-hidden className="size-4" />}
 
         {t(($) => $.content.emptyStates[variant].action)}

@@ -1,9 +1,13 @@
 import { screen } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import { renderWithRouter } from '@/test/render';
 
 import MyQuizzesPage from './index';
+
+vi.mock('@/contexts/AuthContext/useAuth', () => ({
+  useAuth: () => ({ user: null }),
+}));
 
 describe('MyQuizzesPage', () => {
   it('renders page content correctly', () => {

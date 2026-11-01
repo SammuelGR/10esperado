@@ -1,23 +1,30 @@
 import { ArrowDown as ArrowDownIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
+import type { ActiveQuiz } from '@/types/quiz';
+
 import EmptyState from './EmptyState';
 import QuizItem from './QuizItem';
-import type { QuizListEntry } from './types';
 
 interface QuizListProps {
-  quizzes: QuizListEntry[];
+  quizzes: ActiveQuiz[];
   totalCount?: number;
   emptyState?: 'empty' | 'noResults';
+  onClearFilters?: () => void;
 }
 
-export default function QuizList({ quizzes, totalCount = quizzes.length, emptyState = 'empty' }: QuizListProps) {
+export default function QuizList({
+  quizzes,
+  totalCount = quizzes.length,
+  emptyState = 'empty',
+  onClearFilters,
+}: QuizListProps) {
   const { t } = useTranslation('myQuizzes');
 
   return (
     <section aria-label={t(($) => $.content.list.label)} className="mt-4 sm:mt-5">
       {quizzes.length === 0 ? (
-        <EmptyState variant={emptyState} />
+        <EmptyState onClearFilters={onClearFilters} variant={emptyState} />
       ) : (
         <>
           <div className="md:rounded-2xl md:border md:border-border md:bg-linear-to-br md:from-card md:to-background">

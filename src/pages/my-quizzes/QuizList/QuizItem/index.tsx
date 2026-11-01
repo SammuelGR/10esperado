@@ -1,9 +1,9 @@
 import { useTranslation } from 'react-i18next';
 
+import type { ActiveQuiz } from '@/types/quiz';
 import { cn } from '@/utils/cn';
 import { dateFormatter, timeFormatter } from '@/utils/formatters/date';
 
-import type { QuizListEntry } from '../types';
 import ActionsMenu from './ActionsMenu';
 
 const DIFFICULTY_CLASSES = {
@@ -13,7 +13,7 @@ const DIFFICULTY_CLASSES = {
 } as const;
 
 interface QuizItemProps {
-  quiz: QuizListEntry;
+  quiz: ActiveQuiz;
 }
 
 export default function QuizItem({ quiz }: QuizItemProps) {

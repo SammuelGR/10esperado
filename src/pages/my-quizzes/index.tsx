@@ -1,13 +1,35 @@
 import { Link } from '@tanstack/react-router';
 import { Plus as PlusIcon } from 'lucide-react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { useAuth } from '@/contexts/AuthContext/useAuth';
+import { getActiveQuizzesByAuthor } from '@/services/quiz';
+import type { ActiveQuiz } from '@/types/quiz';
+
 import Filters from './Filters';
-import { mockQuizzes } from './mockQuizzes';
 import QuizList from './QuizList';
 
 export default function MyQuizzesPage() {
   const { t } = useTranslation('myQuizzes');
+  const { user } = useAuth();
+  const [search, setSearch] = useState('');
+  const [status, setStatus] = useState<'all' | ActiveQuiz['status']>('all');
+
+  const result = user ? getActiveQuizzesByAuthor(user.id) : null;
+  const quizzes = result?.quizzes ?? [];
+  const normalizedSearch = search.trim().toLocaleLowerCase('pt-BR');
+  const filteredQuizzes = quizzes.filter((quiz) => {
+    const matchesSearch = quiz.title.toLocaleLowerCase('pt-BR').includes(normalizedSearch);
+    const matchesStatus = status === 'all' || quiz.status === status;
+
+    return matchesSearch && matchesStatus;
+  });
+
+  function clearFilters() {
+    setSearch('');
+    setStatus('all');
+  }
 
   return (
     <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-7 sm:px-6 sm:py-9">
@@ -30,9 +52,14 @@ export default function MyQuizzesPage() {
         </Link>
       </header>
 
-      <Filters />
+      <Filters onSearchChange={setSearch} onStatusChange={setStatus} search={search} status={status} />
 
-      <QuizList quizzes={mockQuizzes} />
+      <QuizList
+        emptyState={quizzes.length === 0 ? 'empty' : 'noResults'}
+        onClearFilters={clearFilters}
+        quizzes={filteredQuizzes}
+        totalCount={quizzes.length}
+      />
     </main>
   );
 }
