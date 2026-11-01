@@ -16,6 +16,24 @@ describe('FormField', () => {
     expect(screen.getByText('Fake helper')).toBeVisible();
   });
 
+  it('shows an asterisk only for required fields', () => {
+    const { rerender } = render(
+      <FormField htmlFor="fake-field" label="Fake label">
+        <input id="fake-field" />
+      </FormField>,
+    );
+
+    expect(screen.queryByText('*')).not.toBeInTheDocument();
+
+    rerender(
+      <FormField htmlFor="fake-field" label="Fake label" required>
+        <input id="fake-field" />
+      </FormField>,
+    );
+
+    expect(screen.getByText('*')).toBeVisible();
+  });
+
   it('replaces helper with error', () => {
     const { rerender } = render(
       <FormField helper="Fake helper" htmlFor="fake-field" label="Fake label">

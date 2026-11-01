@@ -32,6 +32,11 @@ describe('UserMenu', () => {
     expect(screen.getByRole('button', { name: 'content.header.userMenu.label' })).toBeVisible();
     expect(screen.getByText('content.header.actions.logout')).toBeInTheDocument();
 
+    const myQuizzesLink = screen.getByText('content.header.actions.myQuizzes');
+
+    expect(myQuizzesLink).toBeInTheDocument();
+    expect(myQuizzesLink).toHaveAttribute('href', '/my-quizzes');
+
     const accountLink = screen.getByText('content.header.actions.account');
 
     expect(accountLink).toBeInTheDocument();

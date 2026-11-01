@@ -95,22 +95,18 @@ export default function ConfirmationDialog({ dialogRef }: ConfirmationDialogProp
 
       <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
         <form className="w-full sm:w-auto" method="dialog">
-          <Button
-            autoFocus
-            className="w-full border border-border bg-input text-foreground enabled:hover:bg-card disabled:opacity-50"
-            disabled={isDeactivating}
-            type="submit"
-          >
+          <Button autoFocus className="w-full" disabled={isDeactivating} type="submit" variant="secondary">
             {t(($) => $.deactivation.confirmation.cancel)}
           </Button>
         </form>
 
         <Button
-          className="w-full bg-error text-background enabled:hover:bg-error/90 focus-visible:outline-error sm:w-auto"
+          className="w-full sm:w-auto"
           loading={isDeactivating}
           loadingText={t(($) => $.deactivation.confirmation.loading)}
           onClick={onConfirm}
           type="button"
+          variant="danger"
         >
           {t(($) => $.deactivation.action)}
         </Button>
