@@ -4,6 +4,56 @@
     "description": "Crie e gerencie seus quizzes. Todos os seus rascunhos e quizzes publicados estão aqui.",
     "actions": {
       "newQuiz": "Novo quiz"
+    },
+    "filters": {
+      "search": {
+        "label": "Buscar quizzes por título",
+        "placeholder": "Buscar por título..."
+      },
+      "status": {
+        "label": "Filtrar quizzes por status",
+        "options": {
+          "all": "Todos os status",
+          "draft": "Rascunhos",
+          "published": "Publicados"
+        }
+      }
+    },
+    "list": {
+      "label": "Lista de quizzes",
+      "columns": {
+        "title": "Título",
+        "difficulty": "Dificuldade",
+        "status": "Status",
+        "updatedAt": "Última atualização"
+      },
+      "difficulty": {
+        "easy": "Fácil",
+        "medium": "Média",
+        "hard": "Difícil"
+      },
+      "status": {
+        "draft": "Rascunho",
+        "published": "Publicado"
+      },
+      "actions": {
+        "label": "Ações de {{title}}",
+        "edit": "Editar",
+        "delete": "Excluir"
+      },
+      "count": "Mostrando {{shown}} de {{total}} quizzes",
+      "order": "Ordenado por atualização mais recente"
+    },
+    "emptyStates": {
+      "empty": {
+        "title": "Seus quizzes aparecerão aqui",
+        "description": "Crie seu primeiro quiz e organize seus rascunhos neste espaço.",
+        "action": "Criar primeiro quiz"
+      },
+      "noResults": {
+        "title": "Nenhum quiz encontrado",
+        "action": "Limpar filtros"
+      }
     }
   },
   "new": {

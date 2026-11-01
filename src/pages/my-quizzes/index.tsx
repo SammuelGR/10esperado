@@ -2,6 +2,10 @@ import { Link } from '@tanstack/react-router';
 import { Plus as PlusIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
+import Filters from './Filters';
+import { mockQuizzes } from './mockQuizzes';
+import QuizList from './QuizList';
+
 export default function MyQuizzesPage() {
   const { t } = useTranslation('myQuizzes');
 
@@ -25,6 +29,10 @@ export default function MyQuizzesPage() {
           {t(($) => $.content.actions.newQuiz)}
         </Link>
       </header>
+
+      <Filters />
+
+      <QuizList quizzes={mockQuizzes} />
     </main>
   );
 }
