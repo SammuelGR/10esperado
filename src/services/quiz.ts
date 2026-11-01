@@ -5,7 +5,7 @@ interface CreateQuizParams {
   authorId: string;
   title: string;
   description?: string;
-  difficulty?: Quiz['difficulty'];
+  difficulty?: NonNullable<Quiz['difficulty']>;
 }
 
 type CreateQuizResult = { success: true; quiz: Quiz };
