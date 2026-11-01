@@ -6,6 +6,7 @@
         "name": "esperado"
       },
       "actions": {
+        "myQuizzes": "Meus quizzes",
         "account": "Minha conta",
         "login": "Entrar",
         "logout": "Sair",

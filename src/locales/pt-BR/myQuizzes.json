@@ -1,0 +1,43 @@
+{
+  "content": {
+    "title": "Meus quizzes",
+    "description": "Crie e gerencie seus quizzes. Todos os seus rascunhos e quizzes publicados estão aqui.",
+    "actions": {
+      "newQuiz": "Novo quiz"
+    }
+  },
+  "new": {
+    "back": "Meus quizzes",
+    "title": "Novo quiz",
+    "description": "Preencha as informações iniciais para criar seu quiz.",
+    "form": {
+      "title": "Informações do quiz",
+      "status": "Rascunho",
+      "quizTitle": {
+        "label": "Título",
+        "placeholder": "Digite o título do quiz",
+        "helper": "1 a 50 caracteres."
+      },
+      "description": {
+        "label": "Descrição",
+        "placeholder": "Descreva brevemente o conteúdo do quiz",
+        "helper": "Até 1.000 caracteres."
+      },
+      "difficulty": {
+        "label": "Dificuldade",
+        "placeholder": "Selecionar dificuldade",
+        "helper": "Opcional para rascunhos.",
+        "options": {
+          "easy": "Fácil",
+          "medium": "Média",
+          "hard": "Difícil"
+        }
+      },
+      "actions": {
+        "cancel": "Cancelar",
+        "submit": "Criar rascunho"
+      }
+    },
+    "note": "O quiz será salvo como <strong>rascunho</strong>. Você poderá editar suas informações depois."
+  }
+}

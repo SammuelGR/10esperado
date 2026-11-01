@@ -28,7 +28,17 @@ export default function Header() {
 
         {user && (
           <>
-            <nav className="hidden self-stretch sm:ml-14 sm:flex sm:flex-1">
+            <nav className="hidden self-stretch sm:ml-14 sm:flex sm:flex-1 sm:gap-8">
+              <Link
+                className={`inline-flex items-center border-b-2 border-transparent text-sm font-medium
+                  text-muted-foreground transition-colors hover:text-primary focus-visible:outline-2
+                  focus-visible:outline-offset-2 focus-visible:outline-primary
+                  data-[status=active]:border-primary data-[status=active]:text-primary`}
+                to="/my-quizzes"
+              >
+                {t(($) => $.content.header.actions.myQuizzes)}
+              </Link>
+
               <Link
                 className={`inline-flex items-center border-b-2 border-transparent text-sm font-medium
                   text-muted-foreground transition-colors hover:text-primary focus-visible:outline-2
