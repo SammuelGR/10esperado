@@ -16,12 +16,19 @@
       "quizTitle": {
         "label": "Título",
         "placeholder": "Digite o título do quiz",
-        "helper": "1 a 50 caracteres."
+        "helper": "1 a 50 caracteres.",
+        "errors": {
+          "required": "Informe um título.",
+          "length": "O título deve ter no máximo 50 caracteres."
+        }
       },
       "description": {
         "label": "Descrição",
         "placeholder": "Descreva brevemente o conteúdo do quiz",
-        "helper": "Até 1.000 caracteres."
+        "helper": "Até 1.000 caracteres.",
+        "errors": {
+          "length": "A descrição deve ter no máximo 1.000 caracteres."
+        }
       },
       "difficulty": {
         "label": "Dificuldade",
@@ -36,6 +43,12 @@
       "actions": {
         "cancel": "Cancelar",
         "submit": "Criar rascunho"
+      },
+      "submit": {
+        "loading": "Criando rascunho...",
+        "errors": {
+          "failed": "Não foi possível criar o rascunho. Tente novamente."
+        }
       }
     },
     "note": "O quiz será salvo como <strong>rascunho</strong>. Você poderá editar suas informações depois."
