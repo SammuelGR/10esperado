@@ -20,6 +20,14 @@
 
 The project is frontend-only. No backend will be implemented.
 
+## Validation and Services
+
+Zod schemas validate and normalize input fields before data is passed to services. Services receive validated input and handle business rules and persistence.
+
+## Persisted Dates
+
+Persisted timestamps use ISO 8601 strings in UTC. Reading JSON from localStorage preserves this string representation; convert timestamps to Date objects when needed for date operations or display.
+
 ## Routing
 
 Route modules in `src/routes/` define routing configuration and connect routes to page content in `src/pages/`, keeping routing concerns separate from page implementation.

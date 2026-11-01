@@ -4,6 +4,7 @@ import { initReactI18next } from 'react-i18next';
 import account from '@/locales/pt-BR/account.json';
 import common from '@/locales/pt-BR/common.json';
 import login from '@/locales/pt-BR/login.json';
+import myQuizzes from '@/locales/pt-BR/myQuizzes.json';
 import register from '@/locales/pt-BR/register.json';
 
 export const resources = {
@@ -11,6 +12,7 @@ export const resources = {
     account,
     common,
     login,
+    myQuizzes,
     register,
   },
 } as const;

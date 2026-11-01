@@ -40,6 +40,7 @@ describe('Header', () => {
     expect(loginLink).toHaveAttribute('href', '/login');
     expect(registerLink).toBeVisible();
     expect(registerLink).toHaveAttribute('href', '/register');
+    expect(screen.queryByRole('link', { name: 'content.header.actions.myQuizzes' })).not.toBeInTheDocument();
     expect(screen.queryByRole('link', { name: 'content.header.actions.account' })).not.toBeInTheDocument();
     expect(screen.queryByTestId('user-menu-mock')).not.toBeInTheDocument();
   });
@@ -63,8 +64,11 @@ describe('Header', () => {
 
     renderWithRouter(<Header />);
 
+    const myQuizzesLink = screen.getByRole('link', { name: 'content.header.actions.myQuizzes' });
     const accountLink = screen.getByRole('link', { name: 'content.header.actions.account' });
 
+    expect(myQuizzesLink).toBeVisible();
+    expect(myQuizzesLink).toHaveAttribute('href', '/my-quizzes');
     expect(accountLink).toBeVisible();
     expect(accountLink).toHaveAttribute('href', '/account');
     expect(screen.getByTestId('user-menu-mock')).toBeInTheDocument();
