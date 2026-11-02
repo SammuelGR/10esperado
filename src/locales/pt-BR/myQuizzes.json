@@ -70,51 +70,80 @@
       }
     }
   },
+  "form": {
+    "title": "Informações do quiz",
+    "quizTitle": {
+      "label": "Título",
+      "placeholder": "Digite o título do quiz",
+      "helper": "1 a 50 caracteres.",
+      "errors": {
+        "required": "Informe um título.",
+        "length": "O título deve ter no máximo 50 caracteres."
+      }
+    },
+    "description": {
+      "label": "Descrição",
+      "placeholder": "Descreva brevemente o conteúdo do quiz",
+      "helper": "Até 1.000 caracteres.",
+      "errors": {
+        "length": "A descrição deve ter no máximo 1.000 caracteres."
+      }
+    },
+    "difficulty": {
+      "label": "Dificuldade",
+      "placeholder": "Selecionar dificuldade",
+      "helper": "Opcional para rascunhos.",
+      "errors": {
+        "required": "Informe a dificuldade para manter o quiz publicado."
+      },
+      "options": {
+        "easy": "Fácil",
+        "medium": "Média",
+        "hard": "Difícil"
+      }
+    },
+    "actions": {
+      "cancel": "Cancelar"
+    }
+  },
   "new": {
     "back": "Meus quizzes",
     "title": "Novo quiz",
     "description": "Preencha as informações iniciais para criar seu quiz.",
+    "note": "O quiz será salvo como <strong>rascunho</strong>. Você poderá editar suas informações depois.",
     "form": {
-      "title": "Informações do quiz",
-      "status": "Rascunho",
-      "quizTitle": {
-        "label": "Título",
-        "placeholder": "Digite o título do quiz",
-        "helper": "1 a 50 caracteres.",
-        "errors": {
-          "required": "Informe um título.",
-          "length": "O título deve ter no máximo 50 caracteres."
-        }
-      },
-      "description": {
-        "label": "Descrição",
-        "placeholder": "Descreva brevemente o conteúdo do quiz",
-        "helper": "Até 1.000 caracteres.",
-        "errors": {
-          "length": "A descrição deve ter no máximo 1.000 caracteres."
-        }
-      },
-      "difficulty": {
-        "label": "Dificuldade",
-        "placeholder": "Selecionar dificuldade",
-        "helper": "Opcional para rascunhos.",
-        "options": {
-          "easy": "Fácil",
-          "medium": "Média",
-          "hard": "Difícil"
-        }
-      },
-      "actions": {
-        "cancel": "Cancelar",
-        "submit": "Criar rascunho"
-      },
       "submit": {
+        "label": "Criar rascunho",
         "loading": "Criando rascunho...",
         "errors": {
           "failed": "Não foi possível criar o rascunho. Tente novamente."
         }
       }
+    }
+  },
+  "edit": {
+    "back": "Meus quizzes",
+    "title": "Editar quiz",
+    "description": "Atualize as informações do seu quiz.",
+    "note": "A edição mantém a identidade e o status atual do quiz.",
+    "unavailable": {
+      "title": "Quiz indisponível",
+      "description": "Este quiz não existe, foi excluído ou não está disponível para edição.",
+      "action": "Voltar aos meus quizzes"
     },
-    "note": "O quiz será salvo como <strong>rascunho</strong>. Você poderá editar suas informações depois."
+    "form": {
+      "submit": {
+        "label": "Salvar alterações",
+        "loading": "Salvando...",
+        "errors": {
+          "unauthenticated": "Entre novamente para editar este quiz.",
+          "quizNotFound": "Não foi possível encontrar este quiz.",
+          "notAuthor": "Você não tem permissão para editar este quiz.",
+          "quizDeleted": "Este quiz já foi excluído.",
+          "difficultyRequired": "Informe a dificuldade para manter o quiz publicado.",
+          "failed": "Não foi possível salvar as alterações. Tente novamente."
+        }
+      }
+    }
   }
 }

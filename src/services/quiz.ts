@@ -8,7 +8,16 @@ export interface CreateQuizParams {
   difficulty?: NonNullable<Quiz['difficulty']>;
 }
 
+export interface EditQuizParams {
+  quizId: string;
+  title: string;
+  description?: string;
+  difficulty?: NonNullable<Quiz['difficulty']>;
+}
+
 export type CreateQuizResult = { success: true; quiz: Quiz };
+
+export type EditQuizResult = { success: true; quiz: Quiz } | { success: false; reason: 'quizNotFound' };
 
 export type DeleteQuizResult = { success: true; quiz: Quiz };
 
@@ -46,6 +55,27 @@ export function createQuiz({ authorId, title, description, difficulty }: CreateQ
   writeQuizzes([...quizzes, quiz]);
 
   return { success: true, quiz };
+}
+
+export function editQuiz({ quizId, title, description, difficulty }: EditQuizParams): EditQuizResult {
+  const quizzes = readQuizzes();
+  const quiz = quizzes.find((storedQuiz) => storedQuiz.id === quizId);
+
+  if (!quiz) {
+    return { success: false, reason: 'quizNotFound' };
+  }
+
+  const editedQuiz: Quiz = {
+    ...quiz,
+    title,
+    description,
+    difficulty,
+    updatedAt: new Date().toISOString(),
+  };
+
+  writeQuizzes(quizzes.map((storedQuiz) => (storedQuiz.id === quizId ? editedQuiz : storedQuiz)));
+
+  return { success: true, quiz: editedQuiz };
 }
 
 export function deleteQuiz(quiz: Quiz): DeleteQuizResult {

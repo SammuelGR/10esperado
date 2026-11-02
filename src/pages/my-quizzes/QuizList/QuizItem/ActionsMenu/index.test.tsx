@@ -1,6 +1,8 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 import type { RefObject } from 'react';
 import { describe, expect, it, vi } from 'vitest';
+
+import { renderWithRouter } from '@/test/render';
 
 import ActionsMenu from './index';
 
@@ -21,10 +23,10 @@ const fakeQuiz = {
 
 describe('ActionsMenu', () => {
   it('renders action menu content correctly', () => {
-    render(<ActionsMenu quizId={fakeQuiz.id} />);
+    renderWithRouter(<ActionsMenu quizId={fakeQuiz.id} />);
 
     expect(screen.getByRole('button', { name: 'content.list.actions.label' })).toBeVisible();
-    expect(screen.getByText('content.list.actions.edit')).toBeInTheDocument();
+    expect(screen.getByText('content.list.actions.edit')).toHaveAttribute('href', `/my-quizzes/${fakeQuiz.id}/edit`);
     expect(screen.getByText('content.list.actions.delete')).toBeInTheDocument();
     expect(screen.getByTestId('delete-dialog-mock')).toBeInTheDocument();
   });
@@ -32,7 +34,7 @@ describe('ActionsMenu', () => {
   it('opens the delete dialog', () => {
     const showModal = vi.fn();
 
-    render(<ActionsMenu quizId={fakeQuiz.id} />);
+    renderWithRouter(<ActionsMenu quizId={fakeQuiz.id} />);
 
     // jsdom does not implement showModal or opening native popovers.
     Object.defineProperty(screen.getByTestId('delete-dialog-mock'), 'showModal', { value: showModal });

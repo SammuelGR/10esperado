@@ -2,7 +2,7 @@ import { act, renderHook } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { useAuth } from '@/contexts/AuthContext/useAuth';
-import { createQuiz, deleteQuiz, getQuizzes } from '@/services/quiz';
+import { createQuiz, deleteQuiz, editQuiz, getQuizzes } from '@/services/quiz';
 import type { Quiz } from '@/types/quiz';
 import type { User } from '@/types/user';
 
@@ -16,6 +16,7 @@ vi.mock('@/contexts/AuthContext/useAuth', () => ({
 vi.mock('@/services/quiz', () => ({
   createQuiz: vi.fn(),
   deleteQuiz: vi.fn(),
+  editQuiz: vi.fn(),
   getQuizzes: vi.fn(),
 }));
 
@@ -47,6 +48,7 @@ describe('QuizProvider', () => {
     vi.mocked(getQuizzes).mockReturnValue({ success: true, quizzes: [fakeQuiz] });
     vi.mocked(createQuiz).mockReset();
     vi.mocked(deleteQuiz).mockReset();
+    vi.mocked(editQuiz).mockReset();
   });
 
   it('initializes the context with the quizzes returned by the service', () => {
@@ -85,6 +87,119 @@ describe('QuizProvider', () => {
 
       expect(result.current.createQuiz(fakeQuizValues)).toEqual({ success: false, reason: 'unauthenticated' });
       expect(createQuiz).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('editQuiz', () => {
+    it.each(['draft', 'published'] as const)('edits a %s quiz and refreshes shared queries', (status) => {
+      const quiz: Quiz = { ...fakeQuiz, status };
+      const otherQuiz: Quiz = { ...fakeQuiz, id: 'other-quiz-id', updatedAt: '2026-10-02T10:00:00.000Z' };
+      const values = { ...fakeQuizValues, title: 'Updated quiz' };
+      const editedQuiz: Quiz = { ...quiz, ...values, updatedAt: '2026-10-03T10:00:00.000Z' };
+
+      vi.mocked(getQuizzes).mockReturnValue({ success: true, quizzes: [quiz, otherQuiz] });
+      vi.mocked(editQuiz).mockReturnValue({ success: true, quiz: editedQuiz });
+
+      const { result } = renderHook(() => useQuiz(), { wrapper: QuizProvider });
+
+      act(() => {
+        expect(result.current.editQuiz(quiz.id, values)).toEqual({ success: true, quiz: editedQuiz });
+      });
+
+      expect(editQuiz).toHaveBeenCalledExactlyOnceWith({ quizId: quiz.id, ...values });
+      expect(result.current.quizzes).toEqual([editedQuiz, otherQuiz]);
+      expect(result.current.getQuizById(quiz.id)).toEqual(editedQuiz);
+      expect(result.current.getActiveQuizzesByAuthor(fakeUser.id).quizzes).toEqual([editedQuiz, otherQuiz]);
+    });
+
+    it('rejects editing without authentication', () => {
+      vi.mocked(useAuth, { partial: true }).mockReturnValue({ user: null });
+
+      const { result } = renderHook(() => useQuiz(), { wrapper: QuizProvider });
+
+      expect(result.current.editQuiz(fakeQuiz.id, fakeQuizValues)).toEqual({
+        success: false,
+        reason: 'unauthenticated',
+      });
+      expect(editQuiz).not.toHaveBeenCalled();
+      expect(result.current.quizzes).toEqual([fakeQuiz]);
+    });
+
+    it('rejects editing a nonexistent quiz', () => {
+      const { result } = renderHook(() => useQuiz(), { wrapper: QuizProvider });
+
+      expect(result.current.editQuiz('missing-quiz-id', fakeQuizValues)).toEqual({
+        success: false,
+        reason: 'quizNotFound',
+      });
+      expect(editQuiz).not.toHaveBeenCalled();
+      expect(result.current.quizzes).toEqual([fakeQuiz]);
+    });
+
+    it.each([
+      { overrides: { authorId: 'other-user-id' }, reason: 'notAuthor' },
+      { overrides: { status: 'deleted' }, reason: 'quizDeleted' },
+    ] as const)('rejects editing with reason $reason', ({ overrides, reason }) => {
+      const quiz: Quiz = { ...fakeQuiz, ...overrides };
+
+      vi.mocked(getQuizzes).mockReturnValue({ success: true, quizzes: [quiz] });
+
+      const { result } = renderHook(() => useQuiz(), { wrapper: QuizProvider });
+
+      expect(result.current.editQuiz(quiz.id, fakeQuizValues)).toEqual({ success: false, reason });
+      expect(editQuiz).not.toHaveBeenCalled();
+      expect(result.current.quizzes).toEqual([quiz]);
+    });
+
+    it('rejects removing difficulty from a published quiz', () => {
+      const quiz: Quiz = { ...fakeQuiz, status: 'published' };
+
+      vi.mocked(getQuizzes).mockReturnValue({ success: true, quizzes: [quiz] });
+
+      const { result } = renderHook(() => useQuiz(), { wrapper: QuizProvider });
+
+      expect(result.current.editQuiz(quiz.id, { title: quiz.title })).toEqual({
+        success: false,
+        reason: 'difficultyRequired',
+      });
+      expect(editQuiz).not.toHaveBeenCalled();
+      expect(result.current.quizzes).toEqual([quiz]);
+    });
+
+    it('allows clearing optional metadata in a draft', () => {
+      const values = { title: fakeQuiz.title, description: undefined, difficulty: undefined };
+      const editedQuiz: Quiz = { ...fakeQuiz, ...values };
+
+      vi.mocked(editQuiz).mockReturnValue({ success: true, quiz: editedQuiz });
+
+      const { result } = renderHook(() => useQuiz(), { wrapper: QuizProvider });
+
+      act(() => {
+        expect(result.current.editQuiz(fakeQuiz.id, values)).toEqual({ success: true, quiz: editedQuiz });
+      });
+
+      expect(editQuiz).toHaveBeenCalledExactlyOnceWith({ quizId: fakeQuiz.id, ...values });
+      expect(result.current.quizzes).toEqual([editedQuiz]);
+    });
+
+    it('preserves shared state when the service cannot find the stored quiz', () => {
+      vi.mocked(editQuiz).mockReturnValue({ success: false, reason: 'quizNotFound' });
+
+      const { result } = renderHook(() => useQuiz(), { wrapper: QuizProvider });
+
+      expect(result.current.editQuiz(fakeQuiz.id, fakeQuizValues)).toEqual({ success: false, reason: 'quizNotFound' });
+      expect(result.current.quizzes).toEqual([fakeQuiz]);
+    });
+
+    it('preserves shared state when persistence throws', () => {
+      vi.mocked(editQuiz).mockImplementation(() => {
+        throw new Error('Fake storage error');
+      });
+
+      const { result } = renderHook(() => useQuiz(), { wrapper: QuizProvider });
+
+      expect(() => result.current.editQuiz(fakeQuiz.id, fakeQuizValues)).toThrow('Fake storage error');
+      expect(result.current.quizzes).toEqual([fakeQuiz]);
     });
   });
 

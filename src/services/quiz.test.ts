@@ -1,8 +1,8 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import { STORAGE_KEYS } from '@/constants/storage';
 
-import { createQuiz, deleteQuiz, getQuizzes } from './quiz';
+import { createQuiz, deleteQuiz, editQuiz, getQuizzes } from './quiz';
 
 const fakeQuiz = {
   authorId: 'fake-user-id',
@@ -26,6 +26,68 @@ describe('createQuiz', () => {
 
     expect(result).toEqual({ success: true, quiz: expectedQuiz });
     expect(JSON.parse(localStorage.getItem(STORAGE_KEYS.quizzes) ?? 'null')).toEqual([expectedQuiz]);
+  });
+});
+
+describe('editQuiz', () => {
+  it.each(['draft', 'published'] as const)(
+    'persists metadata while preserving the %s quiz identity and status',
+    (status) => {
+      const storedQuiz = { ...fakeQuiz, id: 'fake-quiz-id', createdAt: fakeQuiz.updatedAt, status };
+      const otherQuiz = { ...storedQuiz, id: 'other-quiz-id' };
+      const values = { title: 'Updated quiz', description: 'Updated description', difficulty: 'hard' } as const;
+
+      localStorage.setItem(STORAGE_KEYS.quizzes, JSON.stringify([storedQuiz, otherQuiz]));
+
+      const result = editQuiz({ quizId: storedQuiz.id, ...values });
+      const expectedQuiz = { ...storedQuiz, ...values, updatedAt: expect.any(String) };
+
+      expect(result).toEqual({ success: true, quiz: expectedQuiz });
+      expect(getQuizzes().quizzes).toEqual([expectedQuiz, otherQuiz]);
+      expect(getQuizzes().quizzes[0].updatedAt).not.toBe(storedQuiz.updatedAt);
+    },
+  );
+
+  it('removes cleared optional metadata from storage', () => {
+    const storedQuiz = { ...fakeQuiz, id: 'fake-quiz-id', createdAt: fakeQuiz.updatedAt };
+
+    localStorage.setItem(STORAGE_KEYS.quizzes, JSON.stringify([storedQuiz]));
+
+    editQuiz({ quizId: storedQuiz.id, title: storedQuiz.title, description: undefined, difficulty: undefined });
+
+    const [quiz] = getQuizzes().quizzes;
+
+    expect(quiz).not.toHaveProperty('description');
+    expect(quiz).not.toHaveProperty('difficulty');
+  });
+
+  it('rejects an unknown id without modifying storage', () => {
+    const storedQuiz = { ...fakeQuiz, id: 'fake-quiz-id', createdAt: fakeQuiz.updatedAt };
+
+    localStorage.setItem(STORAGE_KEYS.quizzes, JSON.stringify([storedQuiz]));
+
+    expect(editQuiz({ quizId: 'missing-quiz-id', title: 'Updated quiz' })).toEqual({
+      success: false,
+      reason: 'quizNotFound',
+    });
+    expect(getQuizzes().quizzes).toEqual([storedQuiz]);
+  });
+
+  it('propagates storage failures without changing the saved quiz', () => {
+    const storedQuiz = { ...fakeQuiz, id: 'fake-quiz-id', createdAt: fakeQuiz.updatedAt };
+
+    localStorage.setItem(STORAGE_KEYS.quizzes, JSON.stringify([storedQuiz]));
+
+    const setItem = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new Error('Fake storage error');
+    });
+
+    try {
+      expect(() => editQuiz({ quizId: storedQuiz.id, title: 'Updated quiz' })).toThrow('Fake storage error');
+      expect(getQuizzes().quizzes).toEqual([storedQuiz]);
+    } finally {
+      setItem.mockRestore();
+    }
   });
 });
 

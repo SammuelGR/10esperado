@@ -2,12 +2,17 @@ import type { ReactNode } from 'react';
 import { useCallback, useMemo, useState } from 'react';
 
 import { useAuth } from '@/contexts/AuthContext/useAuth';
-import { createQuiz as persistQuiz, deleteQuiz as persistQuizDeletion, getQuizzes } from '@/services/quiz';
-import type { CreateQuizParams } from '@/services/quiz';
+import {
+  createQuiz as persistQuiz,
+  deleteQuiz as persistQuizDeletion,
+  editQuiz as persistQuizEdit,
+  getQuizzes,
+} from '@/services/quiz';
+import type { CreateQuizParams, EditQuizParams } from '@/services/quiz';
 import type { ActiveQuiz } from '@/types/quiz';
 
 import { QuizContext } from './context';
-import type { CreateQuizActionResult, DeleteQuizActionResult } from './context';
+import type { CreateQuizActionResult, DeleteQuizActionResult, EditQuizActionResult } from './context';
 
 interface QuizProviderProps {
   children: ReactNode;
@@ -35,6 +40,43 @@ export default function QuizProvider({ children }: QuizProviderProps) {
   );
 
   const getQuizById = useCallback((quizId: string) => quizzes.find((quiz) => quiz.id === quizId), [quizzes]);
+
+  const editQuiz = useCallback(
+    (quizId: string, values: Omit<EditQuizParams, 'quizId'>): EditQuizActionResult => {
+      if (!user) {
+        return { success: false, reason: 'unauthenticated' };
+      }
+
+      const quiz = getQuizById(quizId);
+
+      if (!quiz) {
+        return { success: false, reason: 'quizNotFound' };
+      }
+
+      if (quiz.authorId !== user.id) {
+        return { success: false, reason: 'notAuthor' };
+      }
+
+      if (quiz.status === 'deleted') {
+        return { success: false, reason: 'quizDeleted' };
+      }
+
+      if (quiz.status === 'published' && !values.difficulty) {
+        return { success: false, reason: 'difficultyRequired' };
+      }
+
+      const result = persistQuizEdit({ ...values, quizId });
+
+      if (result.success) {
+        setQuizzes((currentQuizzes) =>
+          currentQuizzes.map((storedQuiz) => (storedQuiz.id === quizId ? result.quiz : storedQuiz)),
+        );
+      }
+
+      return result;
+    },
+    [user, getQuizById],
+  );
 
   const deleteQuiz = useCallback(
     (quizId: string): DeleteQuizActionResult => {
@@ -84,8 +126,8 @@ export default function QuizProvider({ children }: QuizProviderProps) {
   );
 
   const value = useMemo(
-    () => ({ quizzes, createQuiz, deleteQuiz, getQuizById, getActiveQuizzesByAuthor }),
-    [quizzes, createQuiz, deleteQuiz, getQuizById, getActiveQuizzesByAuthor],
+    () => ({ quizzes, createQuiz, editQuiz, deleteQuiz, getQuizById, getActiveQuizzesByAuthor }),
+    [quizzes, createQuiz, editQuiz, deleteQuiz, getQuizById, getActiveQuizzesByAuthor],
   );
 
   return <QuizContext.Provider value={value}>{children}</QuizContext.Provider>;

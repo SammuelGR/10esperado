@@ -5,7 +5,11 @@ import { renderWithRouter } from '@/test/render';
 
 import NewQuizPage from './index';
 
-vi.mock('./QuizForm', () => ({
+vi.mock('@/contexts/QuizContext/useQuiz', () => ({
+  useQuiz: () => ({ createQuiz: vi.fn() }),
+}));
+
+vi.mock('../QuizForm', () => ({
   default: () => <div data-testid="quiz-form-mock" />,
 }));
 
