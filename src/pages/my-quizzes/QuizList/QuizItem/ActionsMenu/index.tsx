@@ -1,5 +1,10 @@
 import { Link } from '@tanstack/react-router';
-import { Ellipsis as EllipsisIcon, Pencil as PencilIcon, Trash2 as TrashIcon } from 'lucide-react';
+import {
+  Ellipsis as EllipsisIcon,
+  ListChecks as ListChecksIcon,
+  Pencil as PencilIcon,
+  Trash2 as TrashIcon,
+} from 'lucide-react';
 import { useId, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -56,6 +61,18 @@ export default function ActionsMenu({ quizId }: ActionsMenuProps) {
           <PencilIcon aria-hidden className="size-3.5 shrink-0" />
 
           {t(($) => $.content.list.actions.edit)}
+        </Link>
+
+        <Link
+          className={`flex min-h-10 w-full items-center gap-2.5 rounded-md px-3 py-2 text-left text-xs
+            transition-colors hover:bg-input focus-visible:outline-2 focus-visible:-outline-offset-2
+            focus-visible:outline-primary`}
+          params={{ quizId }}
+          to="/my-quizzes/$quizId/questions"
+        >
+          <ListChecksIcon aria-hidden className="size-3.5 shrink-0" />
+
+          {t(($) => $.content.list.actions.manageQuestions)}
         </Link>
 
         <hr className="my-0.5 border-border" />

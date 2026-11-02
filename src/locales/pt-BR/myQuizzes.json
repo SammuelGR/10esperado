@@ -39,6 +39,7 @@
       "actions": {
         "label": "Ações de {{title}}",
         "edit": "Editar",
+        "manageQuestions": "Gerenciar questões",
         "delete": "Excluir"
       },
       "deleteDialog": {
@@ -118,6 +119,75 @@
         "errors": {
           "failed": "Não foi possível criar o rascunho. Tente novamente."
         }
+      }
+    }
+  },
+  "questions": {
+    "back": "Meus quizzes",
+    "title": "Gerenciar questões",
+    "count_zero": "{{count}} questões",
+    "count_one": "{{count}} questão",
+    "count_other": "{{count}} questões",
+    "add": "Adicionar questão",
+    "list": "Lista de questões",
+    "delete": "Excluir questão {{number}}",
+    "edit": "Editar questão {{number}}",
+    "collapse": "Recolher questão {{number}} e descartar alterações",
+    "editErrors": {
+      "unauthenticated": "Entre novamente para editar questões.",
+      "quizNotFound": "Não foi possível encontrar este quiz.",
+      "questionNotFound": "Não foi possível encontrar esta questão.",
+      "notAuthor": "Você não tem permissão para editar questões deste quiz.",
+      "quizDeleted": "Este quiz já foi excluído."
+    },
+    "deleteDialog": {
+      "title": "Excluir questão?",
+      "description": "Esta ação não pode ser desfeita.",
+      "close": "Fechar confirmação de exclusão",
+      "cancel": "Cancelar",
+      "confirm": "Excluir",
+      "loading": "Excluindo...",
+      "errors": {
+        "unauthenticated": "Entre novamente para excluir questões.",
+        "quizNotFound": "Não foi possível encontrar este quiz.",
+        "notAuthor": "Você não tem permissão para excluir questões deste quiz.",
+        "quizDeleted": "Este quiz já foi excluído.",
+        "questionNotFound": "Não foi possível encontrar esta questão.",
+        "lastValidQuestion": "Um quiz publicado deve manter pelo menos uma questão válida.",
+        "failed": "Não foi possível excluir a questão. Tente novamente."
+      }
+    },
+    "empty": {
+      "title": "Nenhuma questão ainda",
+      "description": "Adicione a primeira questão para começar."
+    },
+    "form": {
+      "title": "Nova questão",
+      "number": "Q{{number}}",
+      "statement": {
+        "label": "Enunciado",
+        "placeholder": "Digite o enunciado da questão..."
+      },
+      "alternatives": {
+        "label": "Alternativas",
+        "placeholder": "Alternativa {{number}}",
+        "correct": "Marcar alternativa {{number}} como correta",
+        "add": "Adicionar alternativa",
+        "remove": "Remover alternativa {{number}}"
+      },
+      "cancel": "Cancelar",
+      "save": "Salvar questão",
+      "saving": "Salvando...",
+      "errors": {
+        "statement": "Informe o enunciado.",
+        "alternative": "Preencha a alternativa.",
+        "minimumAlternatives": "Adicione pelo menos duas alternativas.",
+        "correctAlternative": "Selecione uma alternativa correta.",
+        "unauthenticated": "Entre novamente para adicionar questões.",
+        "quizNotFound": "Não foi possível encontrar este quiz.",
+        "notAuthor": "Você não tem permissão para adicionar questões a este quiz.",
+        "quizDeleted": "Este quiz já foi excluído.",
+        "failed": "Não foi possível salvar a questão. Tente novamente."
       }
     }
   },

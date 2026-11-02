@@ -3,16 +3,26 @@ import { useCallback, useMemo, useState } from 'react';
 
 import { useAuth } from '@/contexts/AuthContext/useAuth';
 import {
+  addQuestion as persistQuestion,
   createQuiz as persistQuiz,
+  deleteQuestion as persistQuestionDeletion,
   deleteQuiz as persistQuizDeletion,
+  editQuestion as persistQuestionEdit,
   editQuiz as persistQuizEdit,
   getQuizzes,
 } from '@/services/quiz';
-import type { CreateQuizParams, EditQuizParams } from '@/services/quiz';
+import type { AddQuestionParams, CreateQuizParams, EditQuestionParams, EditQuizParams } from '@/services/quiz';
 import type { ActiveQuiz } from '@/types/quiz';
 
 import { QuizContext } from './context';
-import type { CreateQuizActionResult, DeleteQuizActionResult, EditQuizActionResult } from './context';
+import type {
+  AddQuestionActionResult,
+  CreateQuizActionResult,
+  DeleteQuestionActionResult,
+  DeleteQuizActionResult,
+  EditQuestionActionResult,
+  EditQuizActionResult,
+} from './context';
 
 interface QuizProviderProps {
   children: ReactNode;
@@ -40,6 +50,121 @@ export default function QuizProvider({ children }: QuizProviderProps) {
   );
 
   const getQuizById = useCallback((quizId: string) => quizzes.find((quiz) => quiz.id === quizId), [quizzes]);
+
+  const addQuestion = useCallback(
+    (quizId: string, values: Omit<AddQuestionParams, 'quizId'>): AddQuestionActionResult => {
+      if (!user) {
+        return { success: false, reason: 'unauthenticated' };
+      }
+
+      const quiz = getQuizById(quizId);
+
+      if (!quiz) {
+        return { success: false, reason: 'quizNotFound' };
+      }
+
+      if (quiz.authorId !== user.id) {
+        return { success: false, reason: 'notAuthor' };
+      }
+
+      if (quiz.status === 'deleted') {
+        return { success: false, reason: 'quizDeleted' };
+      }
+
+      const result = persistQuestion({ ...values, quizId });
+
+      if (result.success) {
+        setQuizzes((currentQuizzes) =>
+          currentQuizzes.map((storedQuiz) => (storedQuiz.id === quizId ? result.quiz : storedQuiz)),
+        );
+      }
+
+      return result;
+    },
+    [user, getQuizById],
+  );
+
+  const deleteQuestion = useCallback(
+    (quizId: string, questionId: string): DeleteQuestionActionResult => {
+      if (!user) {
+        return { success: false, reason: 'unauthenticated' };
+      }
+
+      const quiz = getQuizById(quizId);
+
+      if (!quiz) {
+        return { success: false, reason: 'quizNotFound' };
+      }
+
+      if (quiz.authorId !== user.id) {
+        return { success: false, reason: 'notAuthor' };
+      }
+
+      if (quiz.status === 'deleted') {
+        return { success: false, reason: 'quizDeleted' };
+      }
+
+      if (!quiz.questions?.some((question) => question.id === questionId)) {
+        return { success: false, reason: 'questionNotFound' };
+      }
+
+      if (quiz.status === 'published' && quiz.questions.length <= 1) {
+        return { success: false, reason: 'lastValidQuestion' };
+      }
+
+      const result = persistQuestionDeletion({ quizId, questionId });
+
+      if (result.success) {
+        setQuizzes((currentQuizzes) =>
+          currentQuizzes.map((storedQuiz) => (storedQuiz.id === quizId ? result.quiz : storedQuiz)),
+        );
+      }
+
+      return result;
+    },
+    [user, getQuizById],
+  );
+
+  const editQuestion = useCallback(
+    (
+      quizId: string,
+      questionId: string,
+      values: Omit<EditQuestionParams, 'quizId' | 'questionId'>,
+    ): EditQuestionActionResult => {
+      if (!user) {
+        return { success: false, reason: 'unauthenticated' };
+      }
+
+      const quiz = getQuizById(quizId);
+
+      if (!quiz) {
+        return { success: false, reason: 'quizNotFound' };
+      }
+
+      if (quiz.authorId !== user.id) {
+        return { success: false, reason: 'notAuthor' };
+      }
+
+      if (quiz.status === 'deleted') {
+        return { success: false, reason: 'quizDeleted' };
+      }
+
+      if (!quiz.questions?.some((question) => question.id === questionId)) {
+        return { success: false, reason: 'questionNotFound' };
+      }
+
+      const result = persistQuestionEdit({ ...values, quizId, questionId });
+
+      if (result.success) {
+        setQuizzes((currentQuizzes) =>
+          currentQuizzes.map((storedQuiz) => (storedQuiz.id === quizId ? result.quiz : storedQuiz)),
+        );
+      }
+
+      return result;
+    },
+    [user, getQuizById],
+  );
 
   const editQuiz = useCallback(
     (quizId: string, values: Omit<EditQuizParams, 'quizId'>): EditQuizActionResult => {
@@ -126,8 +251,28 @@ export default function QuizProvider({ children }: QuizProviderProps) {
   );
 
   const value = useMemo(
-    () => ({ quizzes, createQuiz, editQuiz, deleteQuiz, getQuizById, getActiveQuizzesByAuthor }),
-    [quizzes, createQuiz, editQuiz, deleteQuiz, getQuizById, getActiveQuizzesByAuthor],
+    () => ({
+      quizzes,
+      addQuestion,
+      deleteQuestion,
+      editQuestion,
+      createQuiz,
+      editQuiz,
+      deleteQuiz,
+      getQuizById,
+      getActiveQuizzesByAuthor,
+    }),
+    [
+      quizzes,
+      addQuestion,
+      deleteQuestion,
+      editQuestion,
+      createQuiz,
+      editQuiz,
+      deleteQuiz,
+      getQuizById,
+      getActiveQuizzesByAuthor,
+    ],
   );
 
   return <QuizContext.Provider value={value}>{children}</QuizContext.Provider>;
