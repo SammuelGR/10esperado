@@ -1,16 +1,18 @@
 import { STORAGE_KEYS } from '@/constants/storage';
-import type { ActiveQuiz, Quiz } from '@/types/quiz';
+import type { Quiz } from '@/types/quiz';
 
-interface CreateQuizParams {
+export interface CreateQuizParams {
   authorId: string;
   title: string;
   description?: string;
   difficulty?: NonNullable<Quiz['difficulty']>;
 }
 
-type CreateQuizResult = { success: true; quiz: Quiz };
+export type CreateQuizResult = { success: true; quiz: Quiz };
 
-type GetActiveQuizzesByAuthorResult = { success: true; quizzes: ActiveQuiz[] };
+export type DeleteQuizResult = { success: true; quiz: Quiz };
+
+type GetQuizzesResult = { success: true; quizzes: Quiz[] };
 
 function readQuizzes(): Quiz[] {
   const storedQuizzes = localStorage.getItem(STORAGE_KEYS.quizzes);
@@ -22,15 +24,8 @@ function writeQuizzes(quizzes: Quiz[]): void {
   localStorage.setItem(STORAGE_KEYS.quizzes, JSON.stringify(quizzes));
 }
 
-export function getActiveQuizzesByAuthor(authorId: string): GetActiveQuizzesByAuthorResult {
-  const quizzes = readQuizzes()
-    .filter(
-      (quiz): quiz is ActiveQuiz =>
-        quiz.authorId === authorId && (quiz.status === 'draft' || quiz.status === 'published'),
-    )
-    .sort((first, second) => second.updatedAt.localeCompare(first.updatedAt));
-
-  return { success: true, quizzes };
+export function getQuizzes(): GetQuizzesResult {
+  return { success: true, quizzes: readQuizzes() };
 }
 
 export function createQuiz({ authorId, title, description, difficulty }: CreateQuizParams): CreateQuizResult {
@@ -51,4 +46,17 @@ export function createQuiz({ authorId, title, description, difficulty }: CreateQ
   writeQuizzes([...quizzes, quiz]);
 
   return { success: true, quiz };
+}
+
+export function deleteQuiz(quiz: Quiz): DeleteQuizResult {
+  const quizzes = readQuizzes();
+  const deletedQuiz: Quiz = {
+    ...quiz,
+    status: 'deleted',
+    updatedAt: new Date().toISOString(),
+  };
+
+  writeQuizzes(quizzes.map((storedQuiz) => (storedQuiz.id === quiz.id ? deletedQuiz : storedQuiz)));
+
+  return { success: true, quiz: deletedQuiz };
 }

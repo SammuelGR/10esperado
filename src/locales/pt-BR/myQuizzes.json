@@ -41,6 +41,20 @@
         "edit": "Editar",
         "delete": "Excluir"
       },
+      "deleteDialog": {
+        "title": "Excluir quiz?",
+        "description": "Você está prestes a excluir <strong>“{{title}}”</strong>. O quiz será removido da sua lista e ficará indisponível para acesso.",
+        "cancel": "Cancelar",
+        "confirm": "Excluir quiz",
+        "loading": "Excluindo...",
+        "errors": {
+          "unauthenticated": "Entre novamente para excluir este quiz.",
+          "quizNotFound": "Não foi possível encontrar este quiz.",
+          "notAuthor": "Você não tem permissão para excluir este quiz.",
+          "quizDeleted": "Este quiz já foi excluído.",
+          "failed": "Não foi possível excluir o quiz. Tente novamente."
+        }
+      },
       "count": "Mostrando {{shown}} de {{total}} quizzes",
       "order": "Ordenado por atualização mais recente"
     },

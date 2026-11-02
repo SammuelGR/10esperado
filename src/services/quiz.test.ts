@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { STORAGE_KEYS } from '@/constants/storage';
 
-import { createQuiz, getActiveQuizzesByAuthor } from './quiz';
+import { createQuiz, deleteQuiz, getQuizzes } from './quiz';
 
 const fakeQuiz = {
   authorId: 'fake-user-id',
@@ -29,8 +29,23 @@ describe('createQuiz', () => {
   });
 });
 
-describe('getActiveQuizzesByAuthor', () => {
-  it('returns only active quizzes belonging to the author', () => {
+describe('deleteQuiz', () => {
+  it('marks the stored quiz as deleted and updates updatedAt', () => {
+    const storedQuiz = { ...fakeQuiz, id: 'fake-quiz-id', createdAt: fakeQuiz.updatedAt };
+
+    localStorage.setItem(STORAGE_KEYS.quizzes, JSON.stringify([storedQuiz]));
+
+    deleteQuiz(storedQuiz);
+
+    const { quizzes } = getQuizzes();
+
+    expect(quizzes[0].status).toBe('deleted');
+    expect(quizzes[0].updatedAt).not.toBe(storedQuiz.updatedAt);
+  });
+});
+
+describe('getQuizzes', () => {
+  it('returns all stored quizzes regardless of author or status', () => {
     const fakeStoredQuizzes = [
       {
         ...fakeQuiz,
@@ -57,35 +72,8 @@ describe('getActiveQuizzesByAuthor', () => {
 
     localStorage.setItem(STORAGE_KEYS.quizzes, JSON.stringify(fakeStoredQuizzes));
 
-    const result = getActiveQuizzesByAuthor(fakeQuiz.authorId);
+    const result = getQuizzes();
 
-    expect(result).toEqual({ success: true, quizzes: [fakeStoredQuizzes[0], fakeStoredQuizzes[1]] });
-  });
-
-  it('orders quizzes by updatedAt descending', () => {
-    const fakeStoredQuizzes = [
-      {
-        ...fakeQuiz,
-        updatedAt: '2026-10-04T10:00:00.000Z',
-      },
-      {
-        ...fakeQuiz,
-        updatedAt: '2026-10-06T10:00:00.000Z',
-      },
-      {
-        ...fakeQuiz,
-        updatedAt: '2026-10-05T10:00:00.000Z',
-      },
-    ];
-
-    localStorage.setItem(STORAGE_KEYS.quizzes, JSON.stringify(fakeStoredQuizzes));
-
-    const result = getActiveQuizzesByAuthor(fakeQuiz.authorId);
-
-    expect(result.quizzes.map((quiz) => quiz.updatedAt)).toEqual([
-      '2026-10-06T10:00:00.000Z',
-      '2026-10-05T10:00:00.000Z',
-      '2026-10-04T10:00:00.000Z',
-    ]);
+    expect(result).toEqual({ success: true, quizzes: fakeStoredQuizzes });
   });
 });

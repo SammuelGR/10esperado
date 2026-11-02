@@ -75,7 +75,7 @@ export default function QuizItem({ quiz }: QuizItemProps) {
         <span className="block">{timeFormatter.format(updatedAt)}</span>
       </time>
 
-      <ActionsMenu title={quiz.title} />
+      <ActionsMenu quizId={quiz.id} />
     </li>
   );
 }

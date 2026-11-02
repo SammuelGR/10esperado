@@ -6,14 +6,13 @@ import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
 import { Button, FormField, Input, Select, Textarea } from '@/components';
-import { useAuth } from '@/contexts/AuthContext/useAuth';
-import { createQuiz } from '@/services/quiz';
+import { useQuiz } from '@/contexts/QuizContext/useQuiz';
 
 import { createQuizSchema } from './schema';
 
 export default function QuizForm() {
   const { t } = useTranslation('myQuizzes');
-  const { user } = useAuth();
+  const { createQuiz } = useQuiz();
   const navigate = useNavigate();
 
   const submissionInProgress = useRef(false);
@@ -45,13 +44,8 @@ export default function QuizForm() {
   });
 
   const submitForm = handleSubmit(async ({ title, description, difficulty }) => {
-    if (!user) {
-      return;
-    }
-
     try {
       const result = createQuiz({
-        authorId: user.id,
         title,
         description,
         difficulty: difficulty || undefined,

@@ -2,27 +2,15 @@ import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { useAuth } from '@/contexts/AuthContext/useAuth';
-import { createQuiz } from '@/services/quiz';
+import { useQuiz } from '@/contexts/QuizContext/useQuiz';
 import { renderWithRouter } from '@/test/render';
 import type { Quiz } from '@/types/quiz';
-import type { User } from '@/types/user';
 
 import QuizForm from './index';
 
-vi.mock('@/contexts/AuthContext/useAuth', () => ({
-  useAuth: vi.fn(),
+vi.mock('@/contexts/QuizContext/useQuiz', () => ({
+  useQuiz: vi.fn(),
 }));
-
-vi.mock('@/services/quiz', () => ({
-  createQuiz: vi.fn(),
-}));
-
-const fakeUser: User = {
-  id: 'fake-user-id',
-  username: 'fake_user',
-  status: 'active',
-};
 
 const fakeQuizValues = {
   title: 'Example quiz',
@@ -32,18 +20,20 @@ const fakeQuizValues = {
 
 const fakeQuiz: Quiz = {
   id: 'fake-quiz-id',
-  authorId: fakeUser.id,
+  authorId: 'fake-user-id',
   ...fakeQuizValues,
   status: 'draft',
   createdAt: '2026-11-01T12:00:00.000Z',
   updatedAt: '2026-11-01T12:00:00.000Z',
 };
 
+const fakeCreateQuiz = vi.fn();
+
 describe('QuizForm', () => {
   beforeEach(() => {
-    vi.mocked(createQuiz).mockReset();
-    vi.mocked(createQuiz).mockReturnValue({ success: true, quiz: fakeQuiz });
-    vi.mocked(useAuth, { partial: true }).mockReturnValue({ user: fakeUser });
+    fakeCreateQuiz.mockReset();
+    fakeCreateQuiz.mockReturnValue({ success: true, quiz: fakeQuiz });
+    vi.mocked(useQuiz, { partial: true }).mockReturnValue({ createQuiz: fakeCreateQuiz });
   });
 
   it('renders form content correctly', () => {
@@ -86,7 +76,7 @@ describe('QuizForm', () => {
     await user.click(screen.getByRole('button', { name: 'new.form.actions.submit' }));
 
     await waitFor(() => {
-      expect(createQuiz).toHaveBeenCalledExactlyOnceWith({ authorId: fakeUser.id, ...fakeQuizValues });
+      expect(fakeCreateQuiz).toHaveBeenCalledExactlyOnceWith(fakeQuizValues);
       expect(navigate).toHaveBeenCalledWith({ to: '/my-quizzes', replace: true });
     });
   });
@@ -131,13 +121,13 @@ describe('QuizForm', () => {
 
     expect(await screen.findByText(message)).toBeVisible();
     expect(screen.getByRole('textbox', { name: `new.form.${field}.label` })).toHaveAccessibleDescription(message);
-    expect(createQuiz).not.toHaveBeenCalled();
+    expect(fakeCreateQuiz).not.toHaveBeenCalled();
   });
 
   it('shows a submission error when creating the quiz throws', async () => {
     const user = userEvent.setup();
 
-    vi.mocked(createQuiz).mockImplementation(() => {
+    fakeCreateQuiz.mockImplementation(() => {
       throw new Error('Fake quiz creation error');
     });
 

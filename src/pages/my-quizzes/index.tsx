@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useAuth } from '@/contexts/AuthContext/useAuth';
-import { getActiveQuizzesByAuthor } from '@/services/quiz';
+import { useQuiz } from '@/contexts/QuizContext/useQuiz';
 import type { ActiveQuiz } from '@/types/quiz';
 
 import Filters from './Filters';
@@ -13,6 +13,7 @@ import QuizList from './QuizList';
 export default function MyQuizzesPage() {
   const { t } = useTranslation('myQuizzes');
   const { user } = useAuth();
+  const { getActiveQuizzesByAuthor } = useQuiz();
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState<'all' | ActiveQuiz['status']>('all');
 

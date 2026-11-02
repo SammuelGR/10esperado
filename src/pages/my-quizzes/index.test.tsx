@@ -2,7 +2,7 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { getActiveQuizzesByAuthor } from '@/services/quiz';
+import { useQuiz } from '@/contexts/QuizContext/useQuiz';
 import { renderWithRouter } from '@/test/render';
 import type { ActiveQuiz } from '@/types/quiz';
 import type { User } from '@/types/user';
@@ -15,8 +15,8 @@ vi.mock('@/contexts/AuthContext/useAuth', () => ({
   useAuth: () => ({ user: fakeUser }),
 }));
 
-vi.mock('@/services/quiz', () => ({
-  getActiveQuizzesByAuthor: vi.fn(),
+vi.mock('@/contexts/QuizContext/useQuiz', () => ({
+  useQuiz: vi.fn(),
 }));
 
 const fakeUser: User = {
@@ -46,9 +46,16 @@ const fakeQuizzes: ActiveQuiz[] = [
   },
 ];
 
+const fakeGetActiveQuizzesByAuthor = vi.fn();
+
 describe('MyQuizzesPage', () => {
   beforeEach(() => {
-    vi.mocked(getActiveQuizzesByAuthor).mockReturnValue({ success: true, quizzes: fakeQuizzes });
+    fakeGetActiveQuizzesByAuthor.mockReset();
+    fakeGetActiveQuizzesByAuthor.mockReturnValue({ success: true, quizzes: fakeQuizzes });
+    vi.mocked(useQuiz, { partial: true }).mockReturnValue({
+      getQuizById: (quizId: string) => fakeQuizzes.find((quiz) => quiz.id === quizId),
+      getActiveQuizzesByAuthor: fakeGetActiveQuizzesByAuthor,
+    });
   });
 
   afterEach(() => {

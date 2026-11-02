@@ -1,6 +1,5 @@
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { keyFromSelector } from 'i18next';
 import { createRef } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -11,11 +10,6 @@ import ConfirmationDialog from './index';
 
 vi.mock('@/contexts/AuthContext/useAuth', () => ({
   useAuth: vi.fn(),
-}));
-
-vi.mock('react-i18next', () => ({
-  useTranslation: () => ({ t: keyFromSelector }),
-  Trans: ({ i18nKey }: { i18nKey: Parameters<typeof keyFromSelector>[0] }) => keyFromSelector(i18nKey),
 }));
 
 const fakeDeactivateAccount = vi.fn();
