@@ -18,6 +18,7 @@ import { Route as PublicRegisterRouteImport } from './_public/register'
 import { Route as SharedIndexRouteImport } from './_shared/index'
 import { Route as PrivateMyQuizzesIndexRouteImport } from './_private/my-quizzes/index'
 import { Route as PrivateMyQuizzesNewRouteImport } from './_private/my-quizzes/new'
+import { Route as PrivateMyQuizzesQuizIdEditRouteImport } from './_private/my-quizzes/$quizId/edit'
 
 const PrivateRouteRoute = PrivateRouteRouteImport.update({
   id: '/_private',
@@ -61,6 +62,12 @@ const PrivateMyQuizzesNewRoute = PrivateMyQuizzesNewRouteImport.update({
   path: '/my-quizzes/new',
   getParentRoute: () => PrivateRouteRoute,
 } as any)
+const PrivateMyQuizzesQuizIdEditRoute =
+  PrivateMyQuizzesQuizIdEditRouteImport.update({
+    id: '/my-quizzes/$quizId/edit',
+    path: '/my-quizzes/$quizId/edit',
+    getParentRoute: () => PrivateRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof SharedIndexRoute
@@ -69,6 +76,7 @@ export interface FileRoutesByFullPath {
   '/register': typeof PublicRegisterRoute
   '/my-quizzes/new': typeof PrivateMyQuizzesNewRoute
   '/my-quizzes/': typeof PrivateMyQuizzesIndexRoute
+  '/my-quizzes/$quizId/edit': typeof PrivateMyQuizzesQuizIdEditRoute
 }
 export interface FileRoutesByTo {
   '/': typeof SharedIndexRoute
@@ -77,6 +85,7 @@ export interface FileRoutesByTo {
   '/register': typeof PublicRegisterRoute
   '/my-quizzes/new': typeof PrivateMyQuizzesNewRoute
   '/my-quizzes': typeof PrivateMyQuizzesIndexRoute
+  '/my-quizzes/$quizId/edit': typeof PrivateMyQuizzesQuizIdEditRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -89,6 +98,7 @@ export interface FileRoutesById {
   '/_shared/': typeof SharedIndexRoute
   '/_private/my-quizzes/new': typeof PrivateMyQuizzesNewRoute
   '/_private/my-quizzes/': typeof PrivateMyQuizzesIndexRoute
+  '/_private/my-quizzes/$quizId/edit': typeof PrivateMyQuizzesQuizIdEditRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -99,6 +109,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/my-quizzes/new'
     | '/my-quizzes/'
+    | '/my-quizzes/$quizId/edit'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -107,6 +118,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/my-quizzes/new'
     | '/my-quizzes'
+    | '/my-quizzes/$quizId/edit'
   id:
     | '__root__'
     | '/_private'
@@ -118,6 +130,7 @@ export interface FileRouteTypes {
     | '/_shared/'
     | '/_private/my-quizzes/new'
     | '/_private/my-quizzes/'
+    | '/_private/my-quizzes/$quizId/edit'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -191,6 +204,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PrivateMyQuizzesNewRouteImport
       parentRoute: typeof PrivateRouteRoute
     }
+    '/_private/my-quizzes/$quizId/edit': {
+      id: '/_private/my-quizzes/$quizId/edit'
+      path: '/my-quizzes/$quizId/edit'
+      fullPath: '/my-quizzes/$quizId/edit'
+      preLoaderRoute: typeof PrivateMyQuizzesQuizIdEditRouteImport
+      parentRoute: typeof PrivateRouteRoute
+    }
   }
 }
 
@@ -198,12 +218,14 @@ interface PrivateRouteRouteChildren {
   PrivateAccountRoute: typeof PrivateAccountRoute
   PrivateMyQuizzesNewRoute: typeof PrivateMyQuizzesNewRoute
   PrivateMyQuizzesIndexRoute: typeof PrivateMyQuizzesIndexRoute
+  PrivateMyQuizzesQuizIdEditRoute: typeof PrivateMyQuizzesQuizIdEditRoute
 }
 
 const PrivateRouteRouteChildren: PrivateRouteRouteChildren = {
   PrivateAccountRoute: PrivateAccountRoute,
   PrivateMyQuizzesNewRoute: PrivateMyQuizzesNewRoute,
   PrivateMyQuizzesIndexRoute: PrivateMyQuizzesIndexRoute,
+  PrivateMyQuizzesQuizIdEditRoute: PrivateMyQuizzesQuizIdEditRoute,
 }
 
 const PrivateRouteRouteWithChildren = PrivateRouteRoute._addFileChildren(

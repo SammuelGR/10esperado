@@ -8,3 +8,7 @@ export interface Quiz {
   createdAt: string;
   updatedAt: string;
 }
+
+export type ActiveQuiz = Quiz & {
+  status: 'draft' | 'published';
+};

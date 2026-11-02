@@ -1,11 +1,24 @@
-import { Link } from '@tanstack/react-router';
+import { Link, useNavigate } from '@tanstack/react-router';
 import { ChevronLeft as ChevronLeftIcon } from 'lucide-react';
 import { Trans, useTranslation } from 'react-i18next';
 
-import QuizForm from './QuizForm';
+import { useQuiz } from '@/contexts/QuizContext/useQuiz';
+
+import QuizForm from '../QuizForm';
+import type { QuizFormSubmitValues } from '../QuizForm';
 
 export default function NewQuizPage() {
   const { t } = useTranslation('myQuizzes');
+  const { createQuiz } = useQuiz();
+  const navigate = useNavigate();
+
+  async function onSubmit(values: QuizFormSubmitValues) {
+    const result = createQuiz(values);
+
+    if (result.success) {
+      await navigate({ to: '/my-quizzes', replace: true });
+    }
+  }
 
   return (
     <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-7 sm:px-6 sm:py-9">
@@ -25,7 +38,12 @@ export default function NewQuizPage() {
         <p className="mt-1.5 text-xs text-muted-foreground sm:text-sm">{t(($) => $.new.description)}</p>
       </header>
 
-      <QuizForm />
+      <QuizForm
+        mode="new"
+        onCancel={() => navigate({ to: '/my-quizzes', replace: true })}
+        onSubmit={onSubmit}
+        status="draft"
+      />
 
       <p className="mt-4 text-xs text-muted-foreground">
         <Trans
