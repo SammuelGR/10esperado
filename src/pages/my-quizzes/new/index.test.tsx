@@ -1,18 +1,16 @@
 import { screen } from '@testing-library/react';
-import { keyFromSelector } from 'i18next';
 import { describe, expect, it, vi } from 'vitest';
 
 import { renderWithRouter } from '@/test/render';
 
 import NewQuizPage from './index';
 
-vi.mock('./QuizForm', () => ({
-  default: () => <div data-testid="quiz-form-mock" />,
+vi.mock('@/contexts/QuizContext/useQuiz', () => ({
+  useQuiz: () => ({ createQuiz: vi.fn() }),
 }));
 
-vi.mock('react-i18next', () => ({
-  useTranslation: () => ({ t: keyFromSelector }),
-  Trans: ({ i18nKey }: { i18nKey: Parameters<typeof keyFromSelector>[0] }) => keyFromSelector(i18nKey),
+vi.mock('../QuizForm', () => ({
+  default: () => <div data-testid="quiz-form-mock" />,
 }));
 
 describe('NewQuizPage', () => {

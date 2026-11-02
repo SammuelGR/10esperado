@@ -20,9 +20,13 @@
 
 The project is frontend-only. No backend will be implemented.
 
-## Validation and Services
+## Validation, State, and Services
 
-Zod schemas validate and normalize input fields before data is passed to services. Services receive validated input and handle business rules and persistence.
+Zod schemas validate and normalize form input before application operations.
+
+Use a context when multiple components or pages need to share and update the same state. Contexts coordinate operations, enforce business rules—including authentication and ownership checks—and update shared state after persistence succeeds. Services receive validated data and explicit identifiers, execute persistence operations, and return their results.
+
+Queries derived from shared state should use that state rather than read storage again. Keep view-specific filters and selections local to their owning components.
 
 ## Persisted Dates
 
