@@ -4,18 +4,14 @@ import { useTranslation } from 'react-i18next';
 
 import { useAuth } from '@/contexts/AuthContext/useAuth';
 import { useQuiz } from '@/contexts/QuizContext/useQuiz';
-import type { ActiveQuiz, Quiz } from '@/types/quiz';
 
 import QuizForm from '../QuizForm';
 import type { QuizFormSubmitValues } from '../QuizForm';
-import UnavailableState from './UnavailableState';
+import UnavailableState from '../UnavailableState';
+import { isEditableBy } from '../UnavailableState/isEditableBy';
 
 interface EditQuizPageProps {
   quizId: string;
-}
-
-function isEditableBy(quiz: Quiz | undefined, userId: string | undefined): quiz is ActiveQuiz {
-  return quiz !== undefined && quiz.authorId === userId && quiz.status !== 'deleted';
 }
 
 export default function EditQuizPage({ quizId }: EditQuizPageProps) {
