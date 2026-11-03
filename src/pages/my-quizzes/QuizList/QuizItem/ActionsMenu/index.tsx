@@ -1,9 +1,11 @@
 import { Link } from '@tanstack/react-router';
 import {
   Ellipsis as EllipsisIcon,
+  EyeOff as EyeOffIcon,
   ListChecks as ListChecksIcon,
   Pencil as PencilIcon,
   Trash2 as TrashIcon,
+  Upload as UploadIcon,
 } from 'lucide-react';
 import { useId, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -11,6 +13,8 @@ import { useTranslation } from 'react-i18next';
 import { useQuiz } from '@/contexts/QuizContext/useQuiz';
 
 import DeleteDialog from './DeleteDialog';
+import PublishDialog from './PublishDialog';
+import UnpublishDialog from './UnpublishDialog';
 
 interface ActionsMenuProps {
   quizId: string;
@@ -20,11 +24,21 @@ export default function ActionsMenu({ quizId }: ActionsMenuProps) {
   const { t } = useTranslation('myQuizzes');
   const { getQuizById } = useQuiz();
   const popoverId = useId();
-  const dialogRef = useRef<HTMLDialogElement>(null);
+  const deleteDialogRef = useRef<HTMLDialogElement>(null);
+  const publishDialogRef = useRef<HTMLDialogElement>(null);
+  const unpublishDialogRef = useRef<HTMLDialogElement>(null);
   const quiz = getQuizById(quizId);
 
   function openDeleteDialog() {
-    dialogRef.current?.showModal();
+    deleteDialogRef.current?.showModal();
+  }
+
+  function openPublishDialog() {
+    publishDialogRef.current?.showModal();
+  }
+
+  function openUnpublishDialog() {
+    unpublishDialogRef.current?.showModal();
   }
 
   if (!quiz) {
@@ -75,6 +89,34 @@ export default function ActionsMenu({ quizId }: ActionsMenuProps) {
           {t(($) => $.content.list.actions.manageQuestions)}
         </Link>
 
+        {quiz.status === 'draft' ? (
+          <button
+            aria-haspopup="dialog"
+            className={`flex min-h-10 w-full items-center gap-2.5 rounded-md px-3 py-2 text-left text-xs
+              transition-colors hover:bg-input focus-visible:outline-2 focus-visible:-outline-offset-2
+              focus-visible:outline-primary`}
+            onClick={openPublishDialog}
+            type="button"
+          >
+            <UploadIcon aria-hidden className="size-3.5 shrink-0" />
+
+            {t(($) => $.content.list.actions.publish)}
+          </button>
+        ) : (
+          <button
+            aria-haspopup="dialog"
+            className={`flex min-h-10 w-full items-center gap-2.5 rounded-md px-3 py-2 text-left text-xs
+              transition-colors hover:bg-input focus-visible:outline-2 focus-visible:-outline-offset-2
+              focus-visible:outline-primary`}
+            onClick={openUnpublishDialog}
+            type="button"
+          >
+            <EyeOffIcon aria-hidden className="size-3.5 shrink-0" />
+
+            {t(($) => $.content.list.actions.unpublish)}
+          </button>
+        )}
+
         <hr className="my-0.5 border-border" />
 
         <button
@@ -91,7 +133,11 @@ export default function ActionsMenu({ quizId }: ActionsMenuProps) {
         </button>
       </div>
 
-      <DeleteDialog dialogRef={dialogRef} quizId={quizId} />
+      <PublishDialog dialogRef={publishDialogRef} quizId={quizId} />
+
+      <UnpublishDialog dialogRef={unpublishDialogRef} quizId={quizId} />
+
+      <DeleteDialog dialogRef={deleteDialogRef} quizId={quizId} />
     </div>
   );
 }

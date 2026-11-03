@@ -49,6 +49,10 @@ export type EditQuizResult = { success: true; quiz: Quiz } | { success: false; r
 
 export type DeleteQuizResult = { success: true; quiz: Quiz };
 
+export type PublishQuizResult = { success: true; quiz: Quiz } | { success: false; reason: 'quizNotFound' };
+
+export type UnpublishQuizResult = { success: true; quiz: Quiz } | { success: false; reason: 'quizNotFound' };
+
 type GetQuizzesResult = { success: true; quizzes: Quiz[] };
 
 function readQuizzes(): Quiz[] {
@@ -200,4 +204,42 @@ export function deleteQuiz(quiz: Quiz): DeleteQuizResult {
   writeQuizzes(quizzes.map((storedQuiz) => (storedQuiz.id === quiz.id ? deletedQuiz : storedQuiz)));
 
   return { success: true, quiz: deletedQuiz };
+}
+
+export function publishQuiz(quizId: string): PublishQuizResult {
+  const quizzes = readQuizzes();
+  const quiz = quizzes.find((storedQuiz) => storedQuiz.id === quizId);
+
+  if (!quiz) {
+    return { success: false, reason: 'quizNotFound' };
+  }
+
+  const publishedQuiz: Quiz = {
+    ...quiz,
+    status: 'published',
+    updatedAt: new Date().toISOString(),
+  };
+
+  writeQuizzes(quizzes.map((storedQuiz) => (storedQuiz.id === quizId ? publishedQuiz : storedQuiz)));
+
+  return { success: true, quiz: publishedQuiz };
+}
+
+export function unpublishQuiz(quizId: string): UnpublishQuizResult {
+  const quizzes = readQuizzes();
+  const quiz = quizzes.find((storedQuiz) => storedQuiz.id === quizId);
+
+  if (!quiz) {
+    return { success: false, reason: 'quizNotFound' };
+  }
+
+  const draftQuiz: Quiz = {
+    ...quiz,
+    status: 'draft',
+    updatedAt: new Date().toISOString(),
+  };
+
+  writeQuizzes(quizzes.map((storedQuiz) => (storedQuiz.id === quizId ? draftQuiz : storedQuiz)));
+
+  return { success: true, quiz: draftQuiz };
 }

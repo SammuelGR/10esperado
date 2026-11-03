@@ -10,9 +10,11 @@ import {
   editQuestion as persistQuestionEdit,
   editQuiz as persistQuizEdit,
   getQuizzes,
+  publishQuiz as persistQuizPublication,
+  unpublishQuiz as persistQuizUnpublication,
 } from '@/services/quiz';
 import type { AddQuestionParams, CreateQuizParams, EditQuestionParams, EditQuizParams } from '@/services/quiz';
-import type { ActiveQuiz } from '@/types/quiz';
+import type { ActiveQuiz, Question } from '@/types/quiz';
 
 import { QuizContext } from './context';
 import type {
@@ -22,10 +24,28 @@ import type {
   DeleteQuizActionResult,
   EditQuestionActionResult,
   EditQuizActionResult,
+  PublishQuizActionResult,
+  UnpublishQuizActionResult,
 } from './context';
 
 interface QuizProviderProps {
   children: ReactNode;
+}
+
+function isValidQuestion(question: Question): boolean {
+  if (!question.statement.trim()) {
+    return false;
+  }
+
+  if (!question.alternatives || question.alternatives.length < 2) {
+    return false;
+  }
+
+  if (question.alternatives.some((alternative) => !alternative.text.trim())) {
+    return false;
+  }
+
+  return question.alternatives.some((alternative) => alternative.id === question.correctAlternativeId);
 }
 
 export default function QuizProvider({ children }: QuizProviderProps) {
@@ -236,6 +256,88 @@ export default function QuizProvider({ children }: QuizProviderProps) {
     [user, getQuizById],
   );
 
+  const publishQuiz = useCallback(
+    (quizId: string): PublishQuizActionResult => {
+      if (!user) {
+        return { success: false, reason: 'unauthenticated' };
+      }
+
+      const quiz = getQuizById(quizId);
+
+      if (!quiz) {
+        return { success: false, reason: 'quizNotFound' };
+      }
+
+      if (quiz.authorId !== user.id) {
+        return { success: false, reason: 'notAuthor' };
+      }
+
+      if (quiz.status !== 'draft') {
+        return { success: false, reason: 'notDraft' };
+      }
+
+      const trimmedTitle = quiz.title.trim();
+
+      if (trimmedTitle.length < 1 || trimmedTitle.length > 50) {
+        return { success: false, reason: 'invalidTitle' };
+      }
+
+      if (!quiz.difficulty) {
+        return { success: false, reason: 'missingDifficulty' };
+      }
+
+      const hasValidQuestion = quiz.questions?.some(isValidQuestion) ?? false;
+
+      if (!hasValidQuestion) {
+        return { success: false, reason: 'noValidQuestions' };
+      }
+
+      const result = persistQuizPublication(quizId);
+
+      if (result.success) {
+        setQuizzes((currentQuizzes) =>
+          currentQuizzes.map((storedQuiz) => (storedQuiz.id === quizId ? result.quiz : storedQuiz)),
+        );
+      }
+
+      return result;
+    },
+    [user, getQuizById],
+  );
+
+  const unpublishQuiz = useCallback(
+    (quizId: string): UnpublishQuizActionResult => {
+      if (!user) {
+        return { success: false, reason: 'unauthenticated' };
+      }
+
+      const quiz = getQuizById(quizId);
+
+      if (!quiz) {
+        return { success: false, reason: 'quizNotFound' };
+      }
+
+      if (quiz.authorId !== user.id) {
+        return { success: false, reason: 'notAuthor' };
+      }
+
+      if (quiz.status !== 'published') {
+        return { success: false, reason: 'notPublished' };
+      }
+
+      const result = persistQuizUnpublication(quizId);
+
+      if (result.success) {
+        setQuizzes((currentQuizzes) =>
+          currentQuizzes.map((storedQuiz) => (storedQuiz.id === quizId ? result.quiz : storedQuiz)),
+        );
+      }
+
+      return result;
+    },
+    [user, getQuizById],
+  );
+
   const getActiveQuizzesByAuthor = useCallback(
     (authorId: string): { success: true; quizzes: ActiveQuiz[] } => {
       const activeQuizzes = quizzes
@@ -259,6 +361,8 @@ export default function QuizProvider({ children }: QuizProviderProps) {
       createQuiz,
       editQuiz,
       deleteQuiz,
+      publishQuiz,
+      unpublishQuiz,
       getQuizById,
       getActiveQuizzesByAuthor,
     }),
@@ -270,6 +374,8 @@ export default function QuizProvider({ children }: QuizProviderProps) {
       createQuiz,
       editQuiz,
       deleteQuiz,
+      publishQuiz,
+      unpublishQuiz,
       getQuizById,
       getActiveQuizzesByAuthor,
     ],
