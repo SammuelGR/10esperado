@@ -40,7 +40,41 @@
         "label": "Ações de {{title}}",
         "edit": "Editar",
         "manageQuestions": "Gerenciar questões",
+        "publish": "Publicar",
+        "unpublish": "Despublicar",
         "delete": "Excluir"
+      },
+      "publishDialog": {
+        "title": "Publicar quiz?",
+        "description": "O quiz será disponibilizado para outras pessoas responderem.",
+        "close": "Fechar confirmação de publicação",
+        "cancel": "Cancelar",
+        "confirm": "Publicar",
+        "loading": "Publicando...",
+        "errorTitle": "Não foi possível publicar o quiz",
+        "errorDescription": "Corrija o erro abaixo para continuar.",
+        "dismiss": "Fechar",
+        "errors": {
+          "invalidTitle": "Corrija o título do quiz.",
+          "missingDifficulty": "Selecione um nível de dificuldade.",
+          "noValidQuestions": "Adicione pelo menos uma questão válida.",
+          "failed": "Não foi possível publicar o quiz. Tente novamente."
+        },
+        "actions": {
+          "editQuiz": "Editar quiz",
+          "manageQuestions": "Gerenciar questões"
+        }
+      },
+      "unpublishDialog": {
+        "title": "Despublicar quiz?",
+        "description": "O quiz deixará de ser exibido para outras pessoas. Ele continuará salvo em Meus quizzes.",
+        "close": "Fechar confirmação de despublicação",
+        "cancel": "Cancelar",
+        "confirm": "Despublicar",
+        "loading": "Despublicando...",
+        "errors": {
+          "failed": "Não foi possível despublicar o quiz. Tente novamente."
+        }
       },
       "deleteDialog": {
         "title": "Excluir quiz?",

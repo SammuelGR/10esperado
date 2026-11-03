@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 
 import { Button, FormField, Input, Select, Textarea } from '@/components';
 import type { ActiveQuiz } from '@/types/quiz';
+import { cn } from '@/utils/cn';
 
 import { createQuizSchema } from './schema';
 
@@ -18,7 +19,7 @@ export interface QuizFormDefaultValues {
 export interface QuizFormSubmitValues {
   title: string;
   description?: string;
-  difficulty?: ActiveQuiz['difficulty'];
+  difficulty?: NonNullable<ActiveQuiz['difficulty']>;
 }
 
 type QuizFormSubmitResult = { error: string } | void;
@@ -123,7 +124,14 @@ export default function QuizForm({
           {t(($) => $.form.title)}
         </h2>
 
-        <span className="rounded-full border border-border bg-input px-2.5 py-0.5 text-xs text-muted-foreground">
+        <span
+          className={cn(
+            'rounded-full border px-2.5 py-0.5 text-xs',
+            status === 'published'
+              ? 'border-emerald-400/25 bg-emerald-400/10 text-emerald-300'
+              : 'border-border bg-input text-muted-foreground',
+          )}
+        >
           {t(($) => $.content.list.status[status])}
         </span>
       </header>
