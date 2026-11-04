@@ -67,13 +67,13 @@ export default function UserMenu() {
         </Link>
 
         <button
-          className={`flex min-h-10 w-full items-center gap-3 rounded-md px-3 py-2 text-left text-sm
-            transition-colors hover:bg-input focus-visible:bg-input focus-visible:outline-2
-            focus-visible:-outline-offset-2 focus-visible:outline-primary`}
+          className={`flex min-h-10 w-full items-center gap-3 rounded-md px-3 py-2 text-left text-sm text-error
+            transition-colors hover:bg-error/10 focus-visible:bg-error/10 focus-visible:outline-2
+            focus-visible:-outline-offset-2 focus-visible:outline-error`}
           onClick={logout}
           type="button"
         >
-          <LogOutIcon aria-hidden className="size-4 shrink-0 text-muted-foreground" />
+          <LogOutIcon aria-hidden className="size-4 shrink-0" />
 
           {t(($) => $.content.header.actions.logout)}
         </button>
