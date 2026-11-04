@@ -10,7 +10,8 @@
         "account": "Minha conta",
         "login": "Entrar",
         "logout": "Sair",
-        "register": "Criar conta"
+        "register": "Criar conta",
+        "seed": "Seed"
       },
       "userMenu": {
         "label": "Menu de {{username}}"
