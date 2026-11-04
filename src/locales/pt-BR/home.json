@@ -1,0 +1,50 @@
+{
+  "content": {
+    "title": "Explorar quizzes",
+    "description": "Descubra quizzes publicados pela comunidade e teste seus conhecimentos.",
+    "emptyStates": {
+      "visitor": {
+        "title": "Ainda não há quizzes disponíveis",
+        "description": "Crie uma conta no 10esperado e publique o primeiro quiz.",
+        "action": "Criar conta"
+      },
+      "authenticated": {
+        "title": "Ainda não há quizzes disponíveis",
+        "description": "Crie e publique um quiz para que ele apareça aqui.",
+        "action": "Meus quizzes"
+      },
+      "noResults": {
+        "title": "Nenhum quiz encontrado",
+        "description": "Não encontramos quizzes com os filtros selecionados. Tente ajustar sua busca.",
+        "action": "Limpar filtros"
+      }
+    },
+    "list": {
+      "label": "Lista de quizzes publicados",
+      "author": "Por <username>{{username}}</username>",
+      "unknownAuthor": "Autor desconhecido",
+      "difficulty": {
+        "easy": "Fácil",
+        "medium": "Média",
+        "hard": "Difícil"
+      },
+      "questions_one": "{{count}} questão",
+      "questions_other": "{{count}} questões"
+    },
+    "filters": {
+      "search": {
+        "label": "Buscar quizzes por título",
+        "placeholder": "Buscar por título..."
+      },
+      "difficulty": {
+        "label": "Filtrar quizzes por dificuldade",
+        "options": {
+          "all": "Todas as dificuldades",
+          "easy": "Fácil",
+          "medium": "Média",
+          "hard": "Difícil"
+        }
+      }
+    }
+  }
+}

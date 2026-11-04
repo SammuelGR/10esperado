@@ -45,6 +45,10 @@ function writeUsers(users: StoredUser[]): void {
   localStorage.setItem(STORAGE_KEYS.users, JSON.stringify(users));
 }
 
+export function getUsers(): User[] {
+  return readUsers().map(({ id, username, status }) => ({ id, username, status }));
+}
+
 export function findUserByUsername(username: string): StoredUser | null {
   const normalizedUsername = username.toLowerCase();
 
