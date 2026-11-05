@@ -1,0 +1,43 @@
+{
+  "back": "Voltar aos quizzes",
+  "finish": "Finalizar quiz",
+  "viewResult": "Ver resultado",
+  "conclude": "Concluir",
+  "resultDialog": {
+    "title": "Resultado do quiz",
+    "description": "Você concluiu o quiz! Veja seu desempenho abaixo.",
+    "correct": "Corretas",
+    "incorrect": "Incorretas",
+    "unanswered": "Em branco",
+    "reviewAnswers": "Revisar respostas"
+  },
+  "questions": {
+    "list": "Lista de questões",
+    "number": "Questão {{number}} de {{total}}",
+    "feedback": {
+      "unanswered": "Você não respondeu a esta questão.",
+      "correctAlternative": "Alternativa correta.",
+      "incorrectSelection": "Sua resposta está incorreta."
+    }
+  },
+  "metadata": {
+    "difficulty": {
+      "easy": "Fácil",
+      "medium": "Média",
+      "hard": "Difícil"
+    },
+    "questions_one": "{{count}} questão",
+    "questions_other": "{{count}} questões"
+  },
+  "details": {
+    "author": "Por {{username}}",
+    "unknownAuthor": "Autor desconhecido",
+    "showMore": "Ver mais",
+    "showLess": "Ver menos"
+  },
+  "unavailable": {
+    "title": "Quiz indisponível",
+    "description": "Este quiz não existe, foi excluído ou não está disponível para responder.",
+    "action": "Voltar ao início"
+  }
+}
