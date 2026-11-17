@@ -1,3 +1,4 @@
+import type { Attempt } from '@/types/attempt';
 import type { Quiz } from '@/types/quiz';
 
 export const SEED_USERS = [
@@ -19,6 +20,7 @@ interface SeedQuiz {
   difficulty?: Quiz['difficulty'];
   status: 'draft' | 'published';
   questions: SeedQuestion[];
+  attempts?: Pick<Attempt, 'correct' | 'incorrect' | 'unanswered'>[];
 }
 
 export const SEED_QUIZZES: SeedQuiz[] = [
@@ -28,6 +30,10 @@ export const SEED_QUIZZES: SeedQuiz[] = [
     description: 'Revise a estrutura de páginas, seletores e propriedades de estilo para a web.',
     difficulty: 'easy',
     status: 'published',
+    attempts: [
+      { correct: 2, incorrect: 1, unanswered: 0 },
+      { correct: 3, incorrect: 0, unanswered: 0 },
+    ],
     questions: [
       {
         statement: 'Qual elemento HTML representa o título principal de uma página?',
@@ -51,6 +57,7 @@ export const SEED_QUIZZES: SeedQuiz[] = [
     title: 'JavaScript',
     difficulty: 'medium',
     status: 'published',
+    attempts: [{ correct: 3, incorrect: 1, unanswered: 1 }],
     questions: [
       {
         statement: 'Qual método cria um novo array transformando cada elemento do array original?',
@@ -122,6 +129,7 @@ export const SEED_QUIZZES: SeedQuiz[] = [
     description: 'Da colonização à República: acontecimentos e personagens da história brasileira.',
     difficulty: 'medium',
     status: 'published',
+    attempts: [{ correct: 5, incorrect: 2, unanswered: 0 }],
     questions: [
       {
         statement: 'Em que ano foi proclamada a Independência do Brasil?',
@@ -165,6 +173,7 @@ export const SEED_QUIZZES: SeedQuiz[] = [
     title: 'Geografia mundial',
     difficulty: 'easy',
     status: 'published',
+    attempts: [{ correct: 3, incorrect: 1, unanswered: 0 }],
     questions: [
       {
         statement: 'Qual é o maior oceano da Terra em área?',
@@ -212,6 +221,7 @@ export const SEED_QUIZZES: SeedQuiz[] = [
     description: 'Pratique porcentagens, frações, operações e conceitos de geometria.',
     difficulty: 'easy',
     status: 'published',
+    attempts: [{ correct: 4, incorrect: 1, unanswered: 1 }],
     questions: [
       {
         statement: 'Quanto é 20% de 150?',
@@ -313,6 +323,7 @@ export const SEED_QUIZZES: SeedQuiz[] = [
     description: 'Explore células, genética e processos fundamentais dos seres vivos.',
     difficulty: 'medium',
     status: 'published',
+    attempts: [{ correct: 0, incorrect: 0, unanswered: 4 }],
     questions: [
       {
         statement:
@@ -357,6 +368,7 @@ export const SEED_QUIZZES: SeedQuiz[] = [
       'Uma revisão baseada em situações práticas de desenvolvimento de interfaces, com foco na organização das responsabilidades, na experiência de navegação e no acesso ao conteúdo por diferentes pessoas. Os cenários apresentam equipes que precisam tomar decisões sobre formulários, componentes e persistência de informações, considerando tanto a manutenção do código quanto o uso da aplicação em telas pequenas, com teclado e com tecnologias assistivas.',
     difficulty: 'hard',
     status: 'published',
+    attempts: [{ correct: 1, incorrect: 1, unanswered: 1 }],
     questions: [
       {
         statement:

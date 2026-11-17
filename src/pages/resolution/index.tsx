@@ -4,7 +4,9 @@ import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Button } from '@/components';
+import { useAuth } from '@/contexts/AuthContext/useAuth';
 import { useQuiz } from '@/contexts/QuizContext/useQuiz';
+import { createAttempt } from '@/services/attempt';
 import { findUserById } from '@/services/user';
 import type { Alternative, Question } from '@/types/quiz';
 import { cn } from '@/utils/cn';
@@ -35,6 +37,7 @@ export interface QuizResult {
 export default function ResolutionPage({ quizId }: ResolutionPageProps) {
   const { t } = useTranslation('resolution');
   const navigate = useNavigate();
+  const { user } = useAuth();
   const { getQuizById } = useQuiz();
   const resultDialogRef = useRef<HTMLDialogElement>(null);
   const questionListRef = useRef<HTMLOListElement>(null);
@@ -84,6 +87,20 @@ export default function ResolutionPage({ quizId }: ResolutionPageProps) {
         result.correctCount += 1;
       } else {
         result.incorrectCount += 1;
+      }
+    }
+
+    if (user) {
+      try {
+        createAttempt({
+          userId: user.id,
+          quizId,
+          correct: result.correctCount,
+          incorrect: result.incorrectCount,
+          unanswered: result.unansweredCount,
+        });
+      } catch {
+        // ¯\(ツ)/¯
       }
     }
 

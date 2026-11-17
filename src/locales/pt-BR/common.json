@@ -7,6 +7,7 @@
       },
       "actions": {
         "myQuizzes": "Meus quizzes",
+        "myPerformance": "Meu desempenho",
         "account": "Minha conta",
         "login": "Entrar",
         "logout": "Sair",

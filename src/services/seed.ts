@@ -1,5 +1,6 @@
 import { SEED_QUIZZES, SEED_USERS } from '@/mocks/seed';
 
+import { createAttempt } from './attempt';
 import { addQuestion, createQuiz, publishQuiz } from './quiz';
 import { createUser, findUserByUsername } from './user';
 
@@ -19,7 +20,7 @@ export async function seedDemoData(currentUserId: string): Promise<void> {
     }),
   );
 
-  for (const { author, title, description, difficulty, status, questions } of SEED_QUIZZES) {
+  for (const { author, title, description, difficulty, status, questions, attempts = [] } of SEED_QUIZZES) {
     const authorId = authorIds[author];
 
     if (!authorId) {
@@ -41,6 +42,10 @@ export async function seedDemoData(currentUserId: string): Promise<void> {
 
     if (status === 'published') {
       publishQuiz(quiz.id);
+
+      for (const attempt of attempts) {
+        createAttempt({ ...attempt, userId: currentUserId, quizId: quiz.id });
+      }
     }
   }
 }

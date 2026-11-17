@@ -13,6 +13,7 @@ import { Route as PrivateRouteRouteImport } from './_private/route'
 import { Route as PublicRouteRouteImport } from './_public/route'
 import { Route as SharedRouteRouteImport } from './_shared/route'
 import { Route as PrivateAccountRouteImport } from './_private/account'
+import { Route as PrivateMyPerformanceRouteImport } from './_private/my-performance'
 import { Route as PublicLoginRouteImport } from './_public/login'
 import { Route as PublicRegisterRouteImport } from './_public/register'
 import { Route as SharedIndexRouteImport } from './_shared/index'
@@ -37,6 +38,11 @@ const SharedRouteRoute = SharedRouteRouteImport.update({
 const PrivateAccountRoute = PrivateAccountRouteImport.update({
   id: '/account',
   path: '/account',
+  getParentRoute: () => PrivateRouteRoute,
+} as any)
+const PrivateMyPerformanceRoute = PrivateMyPerformanceRouteImport.update({
+  id: '/my-performance',
+  path: '/my-performance',
   getParentRoute: () => PrivateRouteRoute,
 } as any)
 const PublicLoginRoute = PublicLoginRouteImport.update({
@@ -86,6 +92,7 @@ const SharedResolutionQuizIdIndexRoute =
 export interface FileRoutesByFullPath {
   '/': typeof SharedIndexRoute
   '/account': typeof PrivateAccountRoute
+  '/my-performance': typeof PrivateMyPerformanceRoute
   '/login': typeof PublicLoginRoute
   '/register': typeof PublicRegisterRoute
   '/my-quizzes/new': typeof PrivateMyQuizzesNewRoute
@@ -97,6 +104,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof SharedIndexRoute
   '/account': typeof PrivateAccountRoute
+  '/my-performance': typeof PrivateMyPerformanceRoute
   '/login': typeof PublicLoginRoute
   '/register': typeof PublicRegisterRoute
   '/my-quizzes/new': typeof PrivateMyQuizzesNewRoute
@@ -111,6 +119,7 @@ export interface FileRoutesById {
   '/_public': typeof PublicRouteRouteWithChildren
   '/_shared': typeof SharedRouteRouteWithChildren
   '/_private/account': typeof PrivateAccountRoute
+  '/_private/my-performance': typeof PrivateMyPerformanceRoute
   '/_public/login': typeof PublicLoginRoute
   '/_public/register': typeof PublicRegisterRoute
   '/_shared/': typeof SharedIndexRoute
@@ -125,6 +134,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/account'
+    | '/my-performance'
     | '/login'
     | '/register'
     | '/my-quizzes/new'
@@ -136,6 +146,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/account'
+    | '/my-performance'
     | '/login'
     | '/register'
     | '/my-quizzes/new'
@@ -149,6 +160,7 @@ export interface FileRouteTypes {
     | '/_public'
     | '/_shared'
     | '/_private/account'
+    | '/_private/my-performance'
     | '/_public/login'
     | '/_public/register'
     | '/_shared/'
@@ -193,6 +205,13 @@ declare module '@tanstack/react-router' {
       path: '/account'
       fullPath: '/account'
       preLoaderRoute: typeof PrivateAccountRouteImport
+      parentRoute: typeof PrivateRouteRoute
+    }
+    '/_private/my-performance': {
+      id: '/_private/my-performance'
+      path: '/my-performance'
+      fullPath: '/my-performance'
+      preLoaderRoute: typeof PrivateMyPerformanceRouteImport
       parentRoute: typeof PrivateRouteRoute
     }
     '/_public/login': {
@@ -256,6 +275,7 @@ declare module '@tanstack/react-router' {
 
 interface PrivateRouteRouteChildren {
   PrivateAccountRoute: typeof PrivateAccountRoute
+  PrivateMyPerformanceRoute: typeof PrivateMyPerformanceRoute
   PrivateMyQuizzesNewRoute: typeof PrivateMyQuizzesNewRoute
   PrivateMyQuizzesIndexRoute: typeof PrivateMyQuizzesIndexRoute
   PrivateMyQuizzesQuizIdEditRoute: typeof PrivateMyQuizzesQuizIdEditRoute
@@ -264,6 +284,7 @@ interface PrivateRouteRouteChildren {
 
 const PrivateRouteRouteChildren: PrivateRouteRouteChildren = {
   PrivateAccountRoute: PrivateAccountRoute,
+  PrivateMyPerformanceRoute: PrivateMyPerformanceRoute,
   PrivateMyQuizzesNewRoute: PrivateMyQuizzesNewRoute,
   PrivateMyQuizzesIndexRoute: PrivateMyQuizzesIndexRoute,
   PrivateMyQuizzesQuizIdEditRoute: PrivateMyQuizzesQuizIdEditRoute,
