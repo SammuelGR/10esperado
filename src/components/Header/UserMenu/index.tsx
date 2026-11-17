@@ -5,6 +5,7 @@ import {
   List as ListIcon,
   LogOut as LogOutIcon,
   Menu as MenuIcon,
+  Target as TargetIcon,
   User as UserIcon,
 } from 'lucide-react';
 import { useId } from 'react';
@@ -55,6 +56,17 @@ export default function UserMenu() {
           <ListIcon aria-hidden className="size-4 shrink-0" />
 
           {t(($) => $.content.header.actions.myQuizzes)}
+        </Link>
+
+        <Link
+          className={`flex min-h-10 w-full items-center gap-3 rounded-md px-3 py-2 text-left text-sm
+            transition-colors hover:bg-input focus-visible:bg-input focus-visible:outline-2
+            focus-visible:-outline-offset-2 focus-visible:outline-primary`}
+          to="/my-performance"
+        >
+          <TargetIcon aria-hidden className="size-4 shrink-0" />
+
+          {t(($) => $.content.header.actions.myPerformance)}
         </Link>
 
         <Link

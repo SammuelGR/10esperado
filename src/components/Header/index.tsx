@@ -44,6 +44,16 @@ export default function Header() {
                   text-muted-foreground transition-colors hover:text-primary focus-visible:outline-2
                   focus-visible:outline-offset-2 focus-visible:outline-primary
                   data-[status=active]:border-primary data-[status=active]:text-primary`}
+                to="/my-performance"
+              >
+                {t(($) => $.content.header.actions.myPerformance)}
+              </Link>
+
+              <Link
+                className={`inline-flex items-center border-b-2 border-transparent text-sm font-medium
+                  text-muted-foreground transition-colors hover:text-primary focus-visible:outline-2
+                  focus-visible:outline-offset-2 focus-visible:outline-primary
+                  data-[status=active]:border-primary data-[status=active]:text-primary`}
                 to="/account"
               >
                 {t(($) => $.content.header.actions.account)}

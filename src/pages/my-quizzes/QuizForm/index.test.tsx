@@ -95,7 +95,8 @@ describe('QuizForm', () => {
       await user.type(screen.getByRole('textbox', { name: 'form.quizTitle.label' }), values.title);
     }
 
-    await user.type(screen.getByRole('textbox', { name: 'form.description.label' }), values.description);
+    await user.click(screen.getByRole('textbox', { name: 'form.description.label' }));
+    await user.paste(values.description);
     await user.click(screen.getByRole('button', { name: 'new.form.submit.label' }));
 
     expect(await screen.findByText(message)).toBeVisible();

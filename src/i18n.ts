@@ -5,6 +5,7 @@ import account from '@/locales/pt-BR/account.json';
 import common from '@/locales/pt-BR/common.json';
 import home from '@/locales/pt-BR/home.json';
 import login from '@/locales/pt-BR/login.json';
+import myPerformance from '@/locales/pt-BR/myPerformance.json';
 import myQuizzes from '@/locales/pt-BR/myQuizzes.json';
 import register from '@/locales/pt-BR/register.json';
 import resolution from '@/locales/pt-BR/resolution.json';
@@ -15,6 +16,7 @@ export const resources = {
     common,
     home,
     login,
+    myPerformance,
     myQuizzes,
     register,
     resolution,
