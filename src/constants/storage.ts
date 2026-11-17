@@ -1,6 +1,7 @@
 const APP_STORAGE_PREFIX = '10esperado:';
 
 export const STORAGE_KEYS = {
+  attempts: `${APP_STORAGE_PREFIX}attempts`,
   quizzes: `${APP_STORAGE_PREFIX}quizzes`,
   session: `${APP_STORAGE_PREFIX}session`,
   users: `${APP_STORAGE_PREFIX}users`,

@@ -1,0 +1,28 @@
+{
+  "content": {
+    "title": "Meu desempenho",
+    "description": "Acompanhe seus resultados e seu histórico de tentativas.",
+    "summary": {
+      "completedQuizzes": "Quizzes concluídos",
+      "answeredQuestions": "Questões respondidas",
+      "correctAnswers": "Respostas corretas",
+      "accuracyRate": "Taxa de acerto"
+    },
+    "list": {
+      "title": "Histórico de tentativas",
+      "order": "Mais recentes primeiro",
+      "columns": {
+        "title": "Título do quiz",
+        "correct": "Corretas",
+        "incorrect": "Incorretas",
+        "unanswered": "Em branco",
+        "completedAt": "Data de conclusão"
+      },
+      "unknownQuiz": "Quiz indisponível",
+      "empty": {
+        "title": "Nenhuma tentativa registrada",
+        "description": "Ao finalizar um quiz, sua tentativa aparecerá aqui."
+      }
+    }
+  }
+}
